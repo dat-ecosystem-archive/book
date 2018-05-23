@@ -88,6 +88,21 @@ which can operate on more bits at the same time.
 An efficient implementation of the previous scheme can be done using lookup
 tables for values between between 0 and 256.
 
+This is all solely for performance and completely optional. The important part
+is that the indexing scheme is followed.
+
+## Types of Bitfields
+We have 3 bitfields:
+- __Data Bitfield:__ Indicates which data you have, and which data you don't.
+- __Indexed Bitfield:__ Helps efficiently search through the Data Bitfield using
+  the Tree Index Scheme.
+- __Merkle Tree Bitfield:__ Indicates which nodes in the Merkle Tree you have,
+  and which nodes you don't.
+
+This means that whenever you update the Data Bitfield, you must also update
+the Indexed Bitfield.
+
+
 ### Updating a Byte
 If we want to set an index in a bitfield to `false`, it would mean we needed to
 flip a bit to `0`. Because we can only operate on bytes, the easiest way to
@@ -111,8 +126,19 @@ let data_update = vec![
 If you take a byte, and you take the lookup table for the bit you want to flip,
 you can bitwise `&` them together to set the bit to zero.
 
-## Serialization - how to structure on disk
-## Implementation
+## Serialization
+For every piece of data there's going to be 1 bit in the Data Bitfield. And
+2 bits in the Merkle Tree Bitfield because there's a parent node and a leaf
+node. There are going to be as many parents as there will be leaves.
+
+Every time there's 16 bits in the Data Bitfield, the Indexed Bitfield needs 2
+bits to indicate if it's all `1`s, `0`s, or a mixture. And 2 bits for the Tree
+Index Scheme, totalling 4 bits in the Indexed Bitfield.
+
+So this translates to the following ratios:
+- __Data:__ 1024 bytes.
+- __Merkle Tree:__ 2048 bytes.
+- __Indexed Tree:__ 256 bytes.
 
 ## Run Length Encoding (RLE)
 TODO: explain the module. For now read the README.
