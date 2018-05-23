@@ -42,22 +42,24 @@ made up out of 2 bits.
 We call this the Tree Index Scheme.
 
 Consider this Indexed Bitfield, written as a sequence of bits:
+
 ```txt
 01011101000000
 ```
 
 If we take the same bits and express it as a flat tree, it looks like this:
+
 ```txt
        01
   01       00
 01  11   00  00
 ```
 
-There's some implications here:
-- A completely zeroed-out buffer is a valid Indexed Bitfield - it just means
-  it's completely empty. Even if you express it as a tree.
+There's a fun implication here: a completely zeroed-out buffer is a valid
+Indexed Bitfield - it just means it's completely empty. Even if you express it
+as a tree.
 
-## Optimizing the Structure
+### Optimizing the Structure
 Looking at a byte and looking at a bit is the same cost in a computer. You want
 to optimize for getting the most information possible when looking at a byte.
 
