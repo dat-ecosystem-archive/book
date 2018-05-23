@@ -84,6 +84,33 @@ Tree Index Scheme.
 In the future we might make this even more efficient using `SIMD` instructions,
 which can operate on more bits at the same time.
 
+## Lookup Tables
+An efficient implementation of the previous scheme can be done using lookup
+tables for values between between 0 and 256.
+
+### Updating a Byte
+If we want to set an index in a bitfield to `false`, it would mean we needed to
+flip a bit to `0`. Because we can only operate on bytes, the easiest way to
+achieve this is to apply a bitmask.
+
+If you consider the following lookup table, in binary notation:
+
+```txt
+let data_update = vec![
+  0b01111111, // 127
+  0b10111111, // 191
+  0b11011111, // 223
+  0b11101111, // 223
+  0b11110111, // 247
+  0b11111011, // 251
+  0b11111101, // 253
+  0b11111110, // 254
+];
+```
+
+If you take a byte, and you take the lookup table for the bit you want to flip,
+you can bitwise `&` them together to set the bit to zero.
+
 ## Serialization - how to structure on disk
 ## Implementation
 
