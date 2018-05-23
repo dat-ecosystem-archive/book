@@ -110,7 +110,7 @@ achieve this is to apply a bitmask.
 
 If you consider the following lookup table, in binary notation:
 
-```txt
+```rust
 let data_update = vec![
   0b01111111, // 127
   0b10111111, // 191
