@@ -3,5 +3,5 @@
 ## Getting Started
 - [Getting Started](./getting-started.md)
 
-## Glossaries
-- [A. Terminology](./terminology.md)
+- [Appendix](./appendix.md)
+  - [A. Terminology](./terminology.md)
