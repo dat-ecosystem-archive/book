@@ -1,11 +1,11 @@
 language: rust
-rust:
-  - nightly
-
-before_script: |
-  rustup component add rustfmt-preview
-script: |
-  cargo fmt -- --write-mode=diff &&
-  cargo build --verbose &&
-  cargo test  --verbose
-cache: cargo
+before_script: cargo install --force mdbook
+script: mdbook build
+deploy:
+  provider: pages
+  skip-cleanup: true
+  github-token: $GITHUB_TOKEN
+  keep-history: true
+  local-dir: book
+  on:
+    branch: master
