@@ -1,6 +1,6 @@
-# book
-
-The Dat Protocol.
+# The Dat Protocol
+This repository contains the source for "The Dat Protocol" - an implementers
+guide.
 
 ## Requirements
 Building the book requires [mdBook](https://github.com/azerupi/mdBook).
