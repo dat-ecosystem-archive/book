@@ -3,6 +3,7 @@
 ## Getting Started
 - [Getting Started](./getting-started.md)
 - [Bitfield](./bitfield.md)
+- [Storage](./storage.md)
 
 - [Appendix](./appendix.md)
   - [A - Terminology](./terminology.md)

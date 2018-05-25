@@ -140,6 +140,8 @@ So this translates to the following ratios:
 - __Merkle Tree:__ 2048 bytes.
 - __Indexed Tree:__ 256 bytes.
 
-## Run Length Encoding (RLE)
+## Run Length Encoding
+When sending data over the wire, we want to compress the bitfields further. An
+efficient way of doing this is by using Run Length Encoding (RLE).
 TODO: explain the module. For now read the README.
 - https://github.com/mafintosh/bitfield-rle
