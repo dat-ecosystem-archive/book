@@ -22,7 +22,6 @@ It's important to know that everything in Hypercore is a byproduct of appending
 data to the Feed. This includes Signatures, Hashes, Root Nodes and more.
 
 ### Types of Storage
-
 - __data:__ The concatenated data that was appended to the feed.
 - __merkle tree:__ The hashes of the data, and hashes of hashes of data - stored
   in a tree. Also stores the length of the datta.
