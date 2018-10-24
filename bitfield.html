@@ -1,0 +1,318 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Bitfield - </title>
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+        <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:500" rel="stylesheet" type="text/css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        
+
+        
+    </head>
+    <body class="light">
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">var path_to_root = "";</script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { } 
+            if (theme === null || theme === undefined) { theme = 'light'; }
+            document.body.className = theme;
+            document.querySelector('html').className = theme + ' js';
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <ol class="chapter"><li><a href="getting-started.html"><strong aria-hidden="true">1.</strong> Getting Started</a></li><li><a href="bitfield.html" class="active"><strong aria-hidden="true">2.</strong> Bitfield</a></li><li><a href="merkle-tree.html"><strong aria-hidden="true">3.</strong> Merkle Tree</a></li><li><a href="storage.html"><strong aria-hidden="true">4.</strong> Storage</a></li><li><a href="appendix.html"><strong aria-hidden="true">5.</strong> Appendix</a></li><li><ol class="section"><li><a href="terminology.html"><strong aria-hidden="true">5.1.</strong> A - Terminology</a></li></ol></li></ol>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar" class="menu-bar">
+                    <div id="menu-bar-sticky-container">
+                        <div class="left-buttons">
+                            <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                                <i class="fa fa-bars"></i>
+                            </button>
+                            <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                                <i class="fa fa-paint-brush"></i>
+                            </button>
+                            <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                                <li role="none"><button role="menuitem" class="theme" id="light">Light <span class="default">(default)</span></button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                            </ul>
+                            
+                            <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                                <i class="fa fa-search"></i>
+                            </button>
+                            
+                        </div>
+
+                        <h1 class="menu-title"></h1> 
+
+                        <div class="right-buttons">
+                            <a href="print.html" title="Print this book" aria-label="Print this book">
+                                <i id="print-button" class="fa fa-print"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" name="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <a class="header" href="#bitfield" id="bitfield"><h1>Bitfield</h1></a>
+<a class="header" href="#what-is-a-bitfield" id="what-is-a-bitfield"><h2>What is a bitfield?</h2></a>
+<p>Space-efficient data structure used to figure out which data you have and what
+data you don't. Meant to always be kept in memory because it's small enough.</p>
+<p>At its core, bitfields are a way of efficiently describing sets of numbers. You
+can think of them as a series of bits. When a number at a position is 1, it
+means that position is in the set. If a number is 0, that position isn't.</p>
+<a class="header" href="#example" id="example"><h3>Example</h3></a>
+<pre><code class="language-txt">bits:  00101
+index: 01234
+</code></pre>
+<p>The set above contains <code>2</code> and <code>4</code>. It's stored left to right, because that's
+the way it's enumerated.</p>
+<p>In Dat we use bitfields to describe which pieces of data we have, and which
+pieces of data we don't. Also it's used internally to index data structures,
+such as the Merkle Tree.</p>
+<a class="header" href="#indexed-bitfields" id="indexed-bitfields"><h2>Indexed Bitfields</h2></a>
+<p>The most common operations in Dat for bitfields is to either find a piece of
+data that's missing, or checking if we have a piece of data.</p>
+<p>Checking if we have a piece of data is straightforward, as all we have to do is
+look in the bitfield in the position of the data and see if it's a <code>1</code>.</p>
+<p>Finding a piece of data we're missing is a bit more tricky. Basically it'll
+require a linear scan of the whole bitfield. In order to speed this up, we use
+an Indexed Bitfield.</p>
+<a class="header" href="#structure" id="structure"><h3>Structure</h3></a>
+<p>At a high level Indexed Bitfields are a binary tree structure where each node is
+made up out of 2 bits.</p>
+<ul>
+<li><code>11</code> indicates all bits under this node are <code>1</code>s.</li>
+<li><code>00</code> indicates all bits under this node are <code>0</code>s.</li>
+<li><code>10</code> indicates bits under this node are a mixture of <code>1</code>s and <code>0</code>s.</li>
+<li><code>01</code> is currently unused and reserved for (possible) future purposes.</li>
+</ul>
+<p>We call this the Tree Index Scheme.</p>
+<p>Consider this Indexed Bitfield, written as a sequence of bits:</p>
+<pre><code class="language-txt">01011101000000
+</code></pre>
+<p>If we take the same bits and express it as a flat tree, it looks like this:</p>
+<pre><code class="language-txt">       01
+  01       00
+01  11   00  00
+</code></pre>
+<p>There's a fun implication here: a completely zeroed-out buffer is a valid
+Indexed Bitfield - it just means it's completely empty. Even if you express it
+as a tree.</p>
+<a class="header" href="#optimizing-the-structure" id="optimizing-the-structure"><h3>Optimizing the Structure</h3></a>
+<p>Looking at a byte and looking at a bit is the same cost in a computer. You want
+to optimize for getting the most information possible when looking at a byte.</p>
+<p>Therefore in order get the most performance out of our structure, we want to
+construct our tree using bytes instead of pairs of bits.</p>
+<p>Consider the following scheme. Given two bytes: <code>A</code> <code>B</code>. Take each of them, and
+split each of them into pairs of two bits. We'll use <code>a1 a2 a3 a4</code> to indicate
+the pairs in <code>A</code>. And <code>b1 b2 b3 b4</code> to indicate the pairs in <code>B</code>.</p>
+<p>The parent of <code>A</code> and <code>B</code> is <code>C</code>. <code>C</code> is constructed by applying the Tree Index
+Scheme to each pair of bits.</p>
+<pre><code class="language-txt">                [a1 + a2, a3 + a4, b1 + b2, b3 + b4]
+[a1, a2, a3, a4]                                    [b1, b2, b3, b4]
+</code></pre>
+<p>In the example above, we use the <code>+</code> operator to indicate the application of the
+Tree Index Scheme.</p>
+<p>In the future we might make this even more efficient using <code>SIMD</code> instructions,
+which can operate on more bits at the same time.</p>
+<a class="header" href="#lookup-tables" id="lookup-tables"><h2>Lookup Tables</h2></a>
+<p>An efficient implementation of the previous scheme can be done using lookup
+tables for values between between 0 and 256.</p>
+<p>This is all solely for performance and completely optional. The important part
+is that the indexing scheme is followed.</p>
+<a class="header" href="#types-of-bitfields" id="types-of-bitfields"><h2>Types of Bitfields</h2></a>
+<p>We have 3 bitfields:</p>
+<ul>
+<li><strong>Data Bitfield:</strong> Indicates which data you have, and which data you don't.</li>
+<li><strong>Indexed Bitfield:</strong> Helps efficiently search through the Data Bitfield using
+the Tree Index Scheme.</li>
+<li><strong>Merkle Tree Bitfield:</strong> Indicates which nodes in the Merkle Tree you have,
+and which nodes you don't.</li>
+</ul>
+<p>This means that whenever you update the Data Bitfield, you must also update
+the Indexed Bitfield.</p>
+<a class="header" href="#updating-a-byte" id="updating-a-byte"><h3>Updating a Byte</h3></a>
+<p>If we want to set an index in a bitfield to <code>false</code>, it would mean we needed to
+flip a bit to <code>0</code>. Because we can only operate on bytes, the easiest way to
+achieve this is to apply a bitmask.</p>
+<p>If you consider the following lookup table, in binary notation:</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+let data_update = vec![
+  0b01111111, // 127
+  0b10111111, // 191
+  0b11011111, // 223
+  0b11101111, // 223
+  0b11110111, // 247
+  0b11111011, // 251
+  0b11111101, // 253
+  0b11111110, // 254
+];
+#}</code></pre></pre>
+<p>If you take a byte, and you take the lookup table for the bit you want to flip,
+you can bitwise <code>&amp;</code> them together to set the bit to zero.</p>
+<a class="header" href="#serialization" id="serialization"><h2>Serialization</h2></a>
+<p>For every piece of data there's going to be 1 bit in the Data Bitfield. And
+2 bits in the Merkle Tree Bitfield because there's a parent node and a leaf
+node. There are going to be as many parents as there will be leaves.</p>
+<p>Every time there's 16 bits in the Data Bitfield, the Indexed Bitfield needs 2
+bits to indicate if it's all <code>1</code>s, <code>0</code>s, or a mixture. And 2 bits for the Tree
+Index Scheme, totalling 4 bits in the Indexed Bitfield.</p>
+<p>So this translates to the following ratios:</p>
+<ul>
+<li><strong>Data:</strong> 1024 bytes.</li>
+<li><strong>Merkle Tree:</strong> 2048 bytes.</li>
+<li><strong>Indexed Tree:</strong> 256 bytes.</li>
+</ul>
+<a class="header" href="#run-length-encoding" id="run-length-encoding"><h2>Run Length Encoding</h2></a>
+<p>When sending data over the wire, we want to compress the bitfields further. An
+efficient way of doing this is by using Run Length Encoding (RLE).
+TODO: explain the module. For now read the README.</p>
+<ul>
+<li>https://github.com/mafintosh/bitfield-rle</li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                        
+                            <a rel="prev" href="getting-started.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                        
+
+                        
+                            <a rel="next" href="merkle-tree.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                
+                    <a href="getting-started.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                
+
+                
+                    <a href="merkle-tree.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                
+            </nav>
+
+        </div>
+
+        
+
+        
+
+        
+
+        
+        <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+        
+
+        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        
+
+        
+
+    </body>
+</html>
