@@ -3,7 +3,7 @@ This repository contains the source for "The Dat Protocol" - an implementers
 guide.
 
 ## Requirements
-Building the book requires [mdBook](https://github.com/azerupi/mdBook).
+Building the book requires [mdbook](https://github.com/azerupi/mdBook).
 ```sh
 $ cargo install mdbook
 ```
