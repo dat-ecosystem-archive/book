@@ -1,2 +1,2 @@
-# Getting Started
+# Introduction
 Let’s get your Dat journey started!
