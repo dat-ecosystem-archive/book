@@ -4,9 +4,10 @@
 
 ## Key Concepts
 - [Key Concepts](./ch01-00-key-concepts.md)
-  - [Bitfield](./ch01-01-bitfield.md)
-  - [Merkle Tree](./ch01-02-merkle-tree.md)
-  - [Storage](./ch01-03-storage.md)
+  - [Flat Tree](./ch01-01-flat-tree.md)
+  - [Bitfield](./ch01-02-bitfield.md)
+  - [Merkle Tree](./ch01-03-merkle-tree.md)
+  - [Storage](./ch01-04-storage.md)
 
 ## Implementation Guide
 - [Implementation Guide](./ch02-00-implementation-guide.md)
