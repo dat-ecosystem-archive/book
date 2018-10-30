@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>A - Terminology - </title>
+        <title>Key Concepts - </title>
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -72,7 +72,7 @@
         </script>
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
-            <ol class="chapter"><li><a href="getting-started.html"><strong aria-hidden="true">1.</strong> Getting Started</a></li><li><a href="bitfield.html"><strong aria-hidden="true">2.</strong> Bitfield</a></li><li><a href="merkle-tree.html"><strong aria-hidden="true">3.</strong> Merkle Tree</a></li><li><a href="storage.html"><strong aria-hidden="true">4.</strong> Storage</a></li><li><a href="appendix.html"><strong aria-hidden="true">5.</strong> Appendix</a></li><li><ol class="section"><li><a href="terminology.html" class="active"><strong aria-hidden="true">5.1.</strong> A - Terminology</a></li></ol></li></ol>
+            <ol class="chapter"><li><a href="ch00-00-introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li><a href="ch01-00-key-concepts.html" class="active"><strong aria-hidden="true">2.</strong> Key Concepts</a></li><li><ol class="section"><li><a href="ch01-01-bitfield.html"><strong aria-hidden="true">2.1.</strong> Bitfield</a></li><li><a href="ch01-02-merkle-tree.html"><strong aria-hidden="true">2.2.</strong> Merkle Tree</a></li><li><a href="ch01-03-storage.html"><strong aria-hidden="true">2.3.</strong> Storage</a></li></ol></li><li><a href="ch02-00-implementation-guide.html"><strong aria-hidden="true">3.</strong> Implementation Guide</a></li><li><a href="ch01-00-appendix.html"><strong aria-hidden="true">4.</strong> Appendix</a></li><li><ol class="section"><li><a href="ch01-01-terminology.html"><strong aria-hidden="true">4.1.</strong> A - Terminology</a></li></ol></li></ol>
         </nav>
 
         <div id="page-wrapper" class="page-wrapper">
@@ -136,36 +136,22 @@
 
                 <div id="content" class="content">
                     <main>
-                        <a class="header" href="#terminology" id="terminology"><h1>Terminology</h1></a>
-<p>The following terms are used when describing the Dat Protocol.</p>
-<a class="header" href="#terminology-currently-in-use" id="terminology-currently-in-use"><h2>Terminology Currently in Use</h2></a>
-<ul>
-<li><strong>feed:</strong> The main data structure in Hypercore. Append-only log that uses
-multiple data structures and algorithms to safely store data.</li>
-<li><strong>data:</strong> Atomic pieces of data that are written to the feed by users.</li>
-<li><strong>keypair:</strong> An <code>Ed25519</code> keypair used to encrypt data with.</li>
-<li><strong>signature:</strong> Certificate that proves a data structure was created by a
-specific keypair.</li>
-<li><strong>tree:</strong> A binary tree mapped as a <code>flat-tree</code> to keep an index of the
-current data.</li>
-<li><strong>flat-tree:</strong> Mapping of a series of integers to a binary tree structure.</li>
-<li><strong>bitfield:</strong> Space-efficient data structure used to figure out which data you
-have and what data you don't. Meant to always be kept in memory because it's
-small enough.</li>
-<li><strong>run-length-encoding (RLE):</strong> Basic compression scheme used to compress
-bitfields when sending over the wire.</li>
-</ul>
+                        <a class="header" href="#key-concepts" id="key-concepts"><h1>Key Concepts</h1></a>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
                         
-                            <a rel="prev" href="appendix.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="ch00-00-introduction.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
                         
 
+                        
+                            <a rel="next" href="ch01-01-bitfield.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
                         
 
                         <div style="clear: both"></div>
@@ -175,11 +161,15 @@ bitfields when sending over the wire.</li>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
                 
-                    <a href="appendix.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a href="ch00-00-introduction.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
                 
 
+                
+                    <a href="ch01-01-bitfield.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
                 
             </nav>
 

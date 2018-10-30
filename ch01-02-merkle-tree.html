@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Bitfield - </title>
+        <title>Merkle Tree - </title>
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -72,7 +72,7 @@
         </script>
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
-            <ol class="chapter"><li><a href="getting-started.html"><strong aria-hidden="true">1.</strong> Getting Started</a></li><li><a href="bitfield.html" class="active"><strong aria-hidden="true">2.</strong> Bitfield</a></li><li><a href="merkle-tree.html"><strong aria-hidden="true">3.</strong> Merkle Tree</a></li><li><a href="storage.html"><strong aria-hidden="true">4.</strong> Storage</a></li><li><a href="appendix.html"><strong aria-hidden="true">5.</strong> Appendix</a></li><li><ol class="section"><li><a href="terminology.html"><strong aria-hidden="true">5.1.</strong> A - Terminology</a></li></ol></li></ol>
+            <ol class="chapter"><li><a href="ch00-00-introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li><a href="ch01-00-key-concepts.html"><strong aria-hidden="true">2.</strong> Key Concepts</a></li><li><ol class="section"><li><a href="ch01-01-bitfield.html"><strong aria-hidden="true">2.1.</strong> Bitfield</a></li><li><a href="ch01-02-merkle-tree.html" class="active"><strong aria-hidden="true">2.2.</strong> Merkle Tree</a></li><li><a href="ch01-03-storage.html"><strong aria-hidden="true">2.3.</strong> Storage</a></li></ol></li><li><a href="ch02-00-implementation-guide.html"><strong aria-hidden="true">3.</strong> Implementation Guide</a></li><li><a href="ch01-00-appendix.html"><strong aria-hidden="true">4.</strong> Appendix</a></li><li><ol class="section"><li><a href="ch01-01-terminology.html"><strong aria-hidden="true">4.1.</strong> A - Terminology</a></li></ol></li></ol>
         </nav>
 
         <div id="page-wrapper" class="page-wrapper">
@@ -136,138 +136,47 @@
 
                 <div id="content" class="content">
                     <main>
-                        <a class="header" href="#bitfield" id="bitfield"><h1>Bitfield</h1></a>
-<a class="header" href="#what-is-a-bitfield" id="what-is-a-bitfield"><h2>What is a bitfield?</h2></a>
-<p>Space-efficient data structure used to figure out which data you have and what
-data you don't. Meant to always be kept in memory because it's small enough.</p>
-<p>At its core, bitfields are a way of efficiently describing sets of numbers. You
-can think of them as a series of bits. When a number at a position is 1, it
-means that position is in the set. If a number is 0, that position isn't.</p>
-<a class="header" href="#example" id="example"><h3>Example</h3></a>
-<pre><code class="language-txt">bits:  00101
-index: 01234
+                        <a class="header" href="#merkle-tree" id="merkle-tree"><h1>Merkle Tree</h1></a>
+<p>The format of the each node in the Merkle Tree on disk is a series of 40 byte
+buffers. The first 32 bytes is the hash. The next 8 bytes is the byte size of
+the spanning tree.</p>
+<pre><code class="language-txt">  0──┐
+     1──┐
+  2──┘  │
+        3──┐
+  4──┐  │  │
+     5──┘  │
+  6──┘     │
+           7
+  8──┐
+     9
+ 10──┘
 </code></pre>
-<p>The set above contains <code>2</code> and <code>4</code>. It's stored left to right, because that's
-the way it's enumerated.</p>
-<p>In Dat we use bitfields to describe which pieces of data we have, and which
-pieces of data we don't. Also it's used internally to index data structures,
-such as the Merkle Tree.</p>
-<a class="header" href="#indexed-bitfields" id="indexed-bitfields"><h2>Indexed Bitfields</h2></a>
-<p>The most common operations in Dat for bitfields is to either find a piece of
-data that's missing, or checking if we have a piece of data.</p>
-<p>Checking if we have a piece of data is straightforward, as all we have to do is
-look in the bitfield in the position of the data and see if it's a <code>1</code>.</p>
-<p>Finding a piece of data we're missing is a bit more tricky. Basically it'll
-require a linear scan of the whole bitfield. In order to speed this up, we use
-an Indexed Bitfield.</p>
-<a class="header" href="#structure" id="structure"><h3>Structure</h3></a>
-<p>At a high level Indexed Bitfields are a binary tree structure where each node is
-made up out of 2 bits.</p>
+<a class="header" href="#storage-format" id="storage-format"><h2>Storage Format</h2></a>
+<p>The format for storing nodes is:</p>
 <ul>
-<li><code>11</code> indicates all bits under this node are <code>1</code>s.</li>
-<li><code>00</code> indicates all bits under this node are <code>0</code>s.</li>
-<li><code>10</code> indicates bits under this node are a mixture of <code>1</code>s and <code>0</code>s.</li>
-<li><code>01</code> is currently unused and reserved for (possible) future purposes.</li>
+<li>32 byte header which starts with a magic number to indicate what type of file
+it is.</li>
+<li>Then a series of nodes, where each index in the sequence corresponds to a
+position in the Flat Tree.</li>
 </ul>
-<p>We call this the Tree Index Scheme.</p>
-<p>Consider this Indexed Bitfield, written as a sequence of bits:</p>
-<pre><code class="language-txt">01011101000000
-</code></pre>
-<p>If we take the same bits and express it as a flat tree, it looks like this:</p>
-<pre><code class="language-txt">       01
-  01       00
-01  11   00  00
-</code></pre>
-<p>There's a fun implication here: a completely zeroed-out buffer is a valid
-Indexed Bitfield - it just means it's completely empty. Even if you express it
-as a tree.</p>
-<a class="header" href="#optimizing-the-structure" id="optimizing-the-structure"><h3>Optimizing the Structure</h3></a>
-<p>Looking at a byte and looking at a bit is the same cost in a computer. You want
-to optimize for getting the most information possible when looking at a byte.</p>
-<p>Therefore in order get the most performance out of our structure, we want to
-construct our tree using bytes instead of pairs of bits.</p>
-<p>Consider the following scheme. Given two bytes: <code>A</code> <code>B</code>. Take each of them, and
-split each of them into pairs of two bits. We'll use <code>a1 a2 a3 a4</code> to indicate
-the pairs in <code>A</code>. And <code>b1 b2 b3 b4</code> to indicate the pairs in <code>B</code>.</p>
-<p>The parent of <code>A</code> and <code>B</code> is <code>C</code>. <code>C</code> is constructed by applying the Tree Index
-Scheme to each pair of bits.</p>
-<pre><code class="language-txt">                [a1 + a2, a3 + a4, b1 + b2, b3 + b4]
-[a1, a2, a3, a4]                                    [b1, b2, b3, b4]
-</code></pre>
-<p>In the example above, we use the <code>+</code> operator to indicate the application of the
-Tree Index Scheme.</p>
-<p>In the future we might make this even more efficient using <code>SIMD</code> instructions,
-which can operate on more bits at the same time.</p>
-<a class="header" href="#lookup-tables" id="lookup-tables"><h2>Lookup Tables</h2></a>
-<p>An efficient implementation of the previous scheme can be done using lookup
-tables for values between between 0 and 256.</p>
-<p>This is all solely for performance and completely optional. The important part
-is that the indexing scheme is followed.</p>
-<a class="header" href="#types-of-bitfields" id="types-of-bitfields"><h2>Types of Bitfields</h2></a>
-<p>We have 3 bitfields:</p>
-<ul>
-<li><strong>Data Bitfield:</strong> Indicates which data you have, and which data you don't.</li>
-<li><strong>Indexed Bitfield:</strong> Helps efficiently search through the Data Bitfield using
-the Tree Index Scheme.</li>
-<li><strong>Merkle Tree Bitfield:</strong> Indicates which nodes in the Merkle Tree you have,
-and which nodes you don't.</li>
-</ul>
-<p>This means that whenever you update the Data Bitfield, you must also update
-the Indexed Bitfield.</p>
-<a class="header" href="#updating-a-byte" id="updating-a-byte"><h3>Updating a Byte</h3></a>
-<p>If we want to set an index in a bitfield to <code>false</code>, it would mean we needed to
-flip a bit to <code>0</code>. Because we can only operate on bytes, the easiest way to
-achieve this is to apply a bitmask.</p>
-<p>If you consider the following lookup table, in binary notation:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-let data_update = vec![
-  0b01111111, // 127
-  0b10111111, // 191
-  0b11011111, // 223
-  0b11101111, // 223
-  0b11110111, // 247
-  0b11111011, // 251
-  0b11111101, // 253
-  0b11111110, // 254
-];
-#}</code></pre></pre>
-<p>If you take a byte, and you take the lookup table for the bit you want to flip,
-you can bitwise <code>&amp;</code> them together to set the bit to zero.</p>
-<a class="header" href="#serialization" id="serialization"><h2>Serialization</h2></a>
-<p>For every piece of data there's going to be 1 bit in the Data Bitfield. And
-2 bits in the Merkle Tree Bitfield because there's a parent node and a leaf
-node. There are going to be as many parents as there will be leaves.</p>
-<p>Every time there's 16 bits in the Data Bitfield, the Indexed Bitfield needs 2
-bits to indicate if it's all <code>1</code>s, <code>0</code>s, or a mixture. And 2 bits for the Tree
-Index Scheme, totalling 4 bits in the Indexed Bitfield.</p>
-<p>So this translates to the following ratios:</p>
-<ul>
-<li><strong>Data:</strong> 1024 bytes.</li>
-<li><strong>Merkle Tree:</strong> 2048 bytes.</li>
-<li><strong>Indexed Tree:</strong> 256 bytes.</li>
-</ul>
-<a class="header" href="#run-length-encoding" id="run-length-encoding"><h2>Run Length Encoding</h2></a>
-<p>When sending data over the wire, we want to compress the bitfields further. An
-efficient way of doing this is by using Run Length Encoding (RLE).
-TODO: explain the module. For now read the README.</p>
-<ul>
-<li>https://github.com/mafintosh/bitfield-rle</li>
-</ul>
+<p>To read the 6th node from disk (flat tree node <code>#5</code>), you'd use an offset into
+the file of <code>32 + 5 * 40</code>, and then read <code>40</code> bytes. The first 32 bytes are the
+hash. The last 8 bytes is the combined length of the data nodes <code>#4</code> and <code>#6</code> are
+referencing. The length is encoded as <code>uint64</code> Big Endian.</p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
                         
-                            <a rel="prev" href="getting-started.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="ch01-01-bitfield.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
                         
 
                         
-                            <a rel="next" href="merkle-tree.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next" href="ch01-03-storage.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
                         
@@ -279,13 +188,13 @@ TODO: explain the module. For now read the README.</p>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
                 
-                    <a href="getting-started.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a href="ch01-01-bitfield.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
                 
 
                 
-                    <a href="merkle-tree.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a href="ch01-03-storage.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
                 
