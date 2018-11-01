@@ -9,9 +9,9 @@ $ cargo install mdbook
 ```
 
 ## Building
-To build the book run
+To build the book locally and preview:
 ```sh
-$ mdbook build
+$ mdbook serve
 ```
 
 ## License
