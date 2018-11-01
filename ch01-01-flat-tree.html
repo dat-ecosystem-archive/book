@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Storage - </title>
+        <title>Flat Tree - </title>
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -72,7 +72,7 @@
         </script>
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
-            <ol class="chapter"><li><a href="ch00-00-introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li><a href="ch01-00-key-concepts.html"><strong aria-hidden="true">2.</strong> Key Concepts</a></li><li><ol class="section"><li><a href="ch01-01-bitfield.html"><strong aria-hidden="true">2.1.</strong> Bitfield</a></li><li><a href="ch01-02-merkle-tree.html"><strong aria-hidden="true">2.2.</strong> Merkle Tree</a></li><li><a href="ch01-03-storage.html" class="active"><strong aria-hidden="true">2.3.</strong> Storage</a></li></ol></li><li><a href="ch02-00-implementation-guide.html"><strong aria-hidden="true">3.</strong> Implementation Guide</a></li><li><a href="ch01-00-appendix.html"><strong aria-hidden="true">4.</strong> Appendix</a></li><li><ol class="section"><li><a href="ch01-01-terminology.html"><strong aria-hidden="true">4.1.</strong> A - Terminology</a></li></ol></li></ol>
+            <ol class="chapter"><li><a href="ch00-00-introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li><a href="ch01-00-key-concepts.html"><strong aria-hidden="true">2.</strong> Key Concepts</a></li><li><ol class="section"><li><a href="ch01-01-flat-tree.html" class="active"><strong aria-hidden="true">2.1.</strong> Flat Tree</a></li><li><a href="ch01-02-bitfield.html"><strong aria-hidden="true">2.2.</strong> Bitfield</a></li><li><a href="ch01-03-merkle-tree.html"><strong aria-hidden="true">2.3.</strong> Merkle Tree</a></li><li><a href="ch01-04-storage.html"><strong aria-hidden="true">2.4.</strong> Storage</a></li></ol></li><li><a href="ch02-00-implementation-guide.html"><strong aria-hidden="true">3.</strong> Implementation Guide</a></li><li><a href="ch01-00-appendix.html"><strong aria-hidden="true">4.</strong> Appendix</a></li><li><ol class="section"><li><a href="ch01-01-terminology.html"><strong aria-hidden="true">4.1.</strong> A - Terminology</a></li></ol></li></ol>
         </nav>
 
         <div id="page-wrapper" class="page-wrapper">
@@ -136,49 +136,152 @@
 
                 <div id="content" class="content">
                     <main>
-                        <a class="header" href="#storage" id="storage"><h1>Storage</h1></a>
+                        <a class="header" href="#flat-tree" id="flat-tree"><h1>Flat Tree</h1></a>
+<p>Flat Trees are the core data structure that powers the Dat protocol.</p>
+<a class="header" href="#thinking-about-flat-trees" id="thinking-about-flat-trees"><h2>Thinking About Flat Trees</h2></a>
 <p>You can represent a binary tree in a simple flat list using the following
 structure:</p>
 <pre><code class="language-txt">      3
   1       5
 0   2   4   6  ...
 </code></pre>
-<a class="header" href="#headers" id="headers"><h2>Headers</h2></a>
-<p>All the files in Dat's Storage are considered SLEEP files. However, not all
-files require a header. Only the files that have a variable algorithm (such as
-hashing, signing) require a SLEEP header.</p>
-<a class="header" href="#usage-in-dat" id="usage-in-dat"><h2>Usage in Dat</h2></a>
-<p>When you append data, you basically update the Merkle Tree. Updating the Merkle
-Tree creates a new Root Hash of the Merkle Tree. For security we need to sign
-this Root Hash, so people can trust it's the new one.</p>
-<p>It's important to know that everything in Hypercore is a byproduct of appending
-data to the Feed. This includes Signatures, Hashes, Root Nodes and more.</p>
-<a class="header" href="#types-of-storage" id="types-of-storage"><h3>Types of Storage</h3></a>
+<p>Let's rotate the tree on its side for notational purposes:</p>
+<pre><code class="language-txt"> 0─┐
+   1─┐
+ 2─┘ │
+     3
+ 4─┐ │
+   5─┘
+ 6─┘
+</code></pre>
+<p>Each number represents an <strong>index</strong> in a flat list. Given the tree:</p>
+<pre><code class="language-txt"> D─┐
+   B─┐
+ E─┘ │
+     A
+ F─┐ │
+   C─┘
+ G─┘
+</code></pre>
+<p>The way this would be expressed in-memory would be as the list (vector):
+<code>[D B E A F C G]</code> or <code>[0 1 2 3 4 5 6]</code>.</p>
+<a class="header" href="#depth" id="depth"><h2>Depth</h2></a>
+<p>Indexes 0, 2, 4, 6 have a depth of 0. And indexes 1, 5, 9 have a depth of 1.</p>
+<pre><code class="language-text">depth = 2  ^        3
+depth = 1  |    1       5
+depth = 0  |  0   2   4   6  ...
+</code></pre>
+<p>If we convert the graph to a chart we could express it as such:</p>
+<pre><code class="language-text">depth = 0 | 0 2 4 6
+depth = 1 | 1 5
+depth = 2 | 3
+depth = 3 |
+</code></pre>
+<p>Now let's add numbers up to 14:</p>
+<pre><code class="language-text">depth = 0 | 0 2 4 6 8 10 12 14
+depth = 1 | 1 5 9 13
+depth = 2 | 3 11
+depth = 3 | 7
+</code></pre>
+<a class="header" href="#node-kinds" id="node-kinds"><h3>Node Kinds</h3></a>
+<p>You might be noticing that the numbers at <code>depth = 0</code> is vastly greater than the
+amount of numbers at every other depth. We refer to nodes at <code>depth = 0</code> as
+<code>leaf nodes</code>, and nodes at every other depth as <code>parent nodes</code>.</p>
+<pre><code class="language-text">leaf nodes   | 0 2 4 6 8 10 12 14
+parent nodes | 1 3 5 7 9 11 13
+</code></pre>
+<p>An interesting aspect of flat trees is that the number of <code>leaf nodes</code> and
+number of <code>parent nodes</code> is in perfect balance. This comes to an interesting
+insight:</p>
 <ul>
-<li><strong>data:</strong> The concatenated data that was appended to the feed.</li>
-<li><strong>merkle tree:</strong> The hashes of the data, and hashes of hashes of data - stored
-in a tree. Also stores the length of the datta.</li>
-<li><strong>signatures:</strong> We take the Root Hash of the Merkle Tree, and sign that one.</li>
-<li><strong>bitfield:</strong> Space-efficient data structure used to figure out which data you
-have and what data you don't.</li>
-<li><strong>key:</strong> Ed25519 Public Key (part of a keypair).</li>
-<li><strong>secret key:</strong> Ed25519 Secret Key (part of a keypair).</li>
+<li>All <strong>even indexes</strong> refer to <code>leaf nodes</code>.</li>
+<li>All <strong>uneven indexes</strong> refer to <code>parent nodes</code>.</li>
 </ul>
-<p>When you produce a new Signature, the index for the Signature is the same index
-as for the data you appended to the Feed.</p>
+<p>The depth of a tree node can be calculated by counting the number of trailing 1s
+a node has in binary notation.</p>
+<pre><code class="language-txt">5 in binary = 101 (one trailing 1)
+3 in binary = 011 (two trailing 1s)
+4 in binary = 100 (zero trailing 1s)
+</code></pre>
+<a class="header" href="#offset" id="offset"><h2>Offset</h2></a>
+<p>When reading about flat-trees the word <code>offset</code> might regularly pop up. This
+refers to the offset from the left hand side of the tree.</p>
+<p>In the following tree the indexes with an offset of 0 are: <code>[0 1 3 7]</code>:</p>
+<pre><code class="language-text">(0)┐
+  (1)┐
+ 2─┘ │
+    (3)┐
+ 4─┐ │ │
+   5─┘ │
+ 6─┘   │
+      (7)
+</code></pre>
+<p>In the next tree the indexes with an offset of 1 are: <code>[2 5 11]</code>:</p>
+<pre><code class="language-text">  0──┐
+     1──┐
+ (2)─┘  │
+        3──┐
+  4──┐  │  │
+    (5)─┘  │
+  6──┘     │
+           7
+  8──┐     │
+     9──┐  │
+ 10──┘  │  │
+      (11)─┘
+ 12──┐  │
+    13──┘
+ 14──┘
+</code></pre>
+<a class="header" href="#relationships-between-nodes" id="relationships-between-nodes"><h2>Relationships Between Nodes</h2></a>
+<p>When describing nodes we often also talk about the relationship between nodes.
+This includes words such as <code>uncle</code>, and <code>parent</code>.</p>
+<p>Take this example tree:</p>
+<pre><code class="language-txt"> 0─┐
+   1─┐
+ 2─┘ │
+     3─┐
+ 4─┐ │ │
+   5─┘ │
+ 6─┘   │
+       7
+ 8
+</code></pre>
+<ul>
+<li><strong>parent:</strong> A parent has two children under it, and is always odd-numbered.
+Node 3 is the parent of 1 and 5.</li>
+<li><strong>leaf:</strong> A node with no children. A leaf node is always even-numbered.
+Nodes 0, 2, 4, 6 and 8 are leaf nodes.</li>
+<li><strong>sibling:</strong> The other node that shares a parent with the current node. For
+example nodes 4 and 6 are siblings.</li>
+<li><strong>uncle:</strong> A parent's sibling. Node 1 is the uncle of nodes 4 and 6.</li>
+<li><strong>root:</strong> A top-most node where the full tree under it is complete (e.g. all
+parent nodes have 2 children). Node 3 is a root node.</li>
+<li><strong>span:</strong> The two nodes that are furthest away in the sub-tree. The span of
+node 1 is <code>0, 2</code>. The span of node 3 is <code>0, 6</code>.</li>
+<li><strong>right span:</strong> The left-most node in the span. The right span of node 1 is 2.
+The right span of node 3 is 6.</li>
+</ul>
+<a class="header" href="#references" id="references"><h2>References</h2></a>
+<ul>
+<li>https://gist.github.com/jimpick/54adc72f11f38f1fe4bc1d45d3981708</li>
+<li>https://github.com/jimpick/hypercore-simple-ipld/blob/master/tree-test.js</li>
+<li>https://datatracker.ietf.org/doc/rfc7574/?include_text=1</li>
+<li>https://www.datprotocol.com/deps/0002-hypercore/</li>
+</ul>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
                         
-                            <a rel="prev" href="ch01-02-merkle-tree.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="ch01-00-key-concepts.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
                         
 
                         
-                            <a rel="next" href="ch02-00-implementation-guide.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next" href="ch01-02-bitfield.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
                         
@@ -190,13 +293,13 @@ as for the data you appended to the Feed.</p>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
                 
-                    <a href="ch01-02-merkle-tree.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a href="ch01-00-key-concepts.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
                 
 
                 
-                    <a href="ch02-00-implementation-guide.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a href="ch01-02-bitfield.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
                 
