@@ -130,6 +130,38 @@ In the next tree the indexes with an offset of 1 are: `[2 5 11]`:
  14──┘
 ```
 
+## Relationships Between Nodes
+When describing nodes we often also talk about the relationship between nodes.
+This includes words such as `uncle`, and `parent`.
+
+Take this example tree:
+
+```txt
+ 0─┐
+   1─┐
+ 2─┘ │
+     3─┐
+ 4─┐ │ │
+   5─┘ │
+ 6─┘   │
+       7
+ 8
+```
+
+- __parent:__ A parent has two children under it, and is always odd-numbered.
+    Node 3 is the parent of 1 and 5.
+- __leaf:__ A node with no children. A leaf node is always even-numbered.
+    Nodes 0, 2, 4, 6 and 8 are leaf nodes.
+- __sibling:__ The other node that shares a parent with the current node. For
+    example nodes 4 and 6 are siblings.
+- __uncle:__ A parent's sibling. Node 1 is the uncle of nodes 4 and 6.
+- __root:__ A top-most node where the full tree under it is complete (e.g. all
+    parent nodes have 2 children). Node 3 is a root node.
+- __span:__ The two nodes that are furthest away in the sub-tree. The span of
+    node 1 is `0, 2`. The span of node 3 is `0, 6`.
+- __right span:__ The left-most node in the span. The right span of node 1 is 2.
+    The right span of node 3 is 6.
+
 ## References
 - https://gist.github.com/jimpick/54adc72f11f38f1fe4bc1d45d3981708
 - https://github.com/jimpick/hypercore-simple-ipld/blob/master/tree-test.js
