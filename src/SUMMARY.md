@@ -13,5 +13,5 @@
 - [Implementation Guide](./ch02-00-implementation-guide.md)
 
 ## Appendix
-- [Appendix](./ch01-00-appendix.md)
-  - [A - Terminology](./ch01-01-terminology.md)
+- [Appendix](./ch03-00-appendix.md)
+  - [A - Terminology](./ch03-01-terminology.md)
