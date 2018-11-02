@@ -72,7 +72,7 @@
         </script>
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
-            <ol class="chapter"><li><a href="ch00-00-introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li><a href="ch01-00-key-concepts.html"><strong aria-hidden="true">2.</strong> Key Concepts</a></li><li><ol class="section"><li><a href="ch01-01-flat-tree.html"><strong aria-hidden="true">2.1.</strong> Flat Tree</a></li><li><a href="ch01-02-bitfield.html"><strong aria-hidden="true">2.2.</strong> Bitfield</a></li><li><a href="ch01-03-merkle-tree.html"><strong aria-hidden="true">2.3.</strong> Merkle Tree</a></li><li><a href="ch01-04-storage.html"><strong aria-hidden="true">2.4.</strong> Storage</a></li></ol></li><li><a href="ch02-00-implementation-guide.html"><strong aria-hidden="true">3.</strong> Implementation Guide</a></li><li><a href="ch01-00-appendix.html"><strong aria-hidden="true">4.</strong> Appendix</a></li><li><ol class="section"><li><a href="ch01-01-terminology.html"><strong aria-hidden="true">4.1.</strong> A - Terminology</a></li></ol></li></ol>
+            <ol class="chapter"><li><a href="ch00-00-introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li><a href="ch01-00-key-concepts.html"><strong aria-hidden="true">2.</strong> Key Concepts</a></li><li><ol class="section"><li><a href="ch01-01-flat-tree.html"><strong aria-hidden="true">2.1.</strong> Flat Tree</a></li><li><a href="ch01-02-bitfield.html"><strong aria-hidden="true">2.2.</strong> Bitfield</a></li><li><a href="ch01-03-merkle-tree.html"><strong aria-hidden="true">2.3.</strong> Merkle Tree</a></li><li><a href="ch01-04-storage.html"><strong aria-hidden="true">2.4.</strong> Storage</a></li></ol></li><li><a href="ch02-00-implementation-guide.html"><strong aria-hidden="true">3.</strong> Implementation Guide</a></li><li><a href="ch03-00-appendix.html"><strong aria-hidden="true">4.</strong> Appendix</a></li><li><ol class="section"><li><a href="ch03-01-terminology.html"><strong aria-hidden="true">4.1.</strong> A - Terminology</a></li></ol></li></ol>
         </nav>
 
         <div id="page-wrapper" class="page-wrapper">
@@ -471,7 +471,40 @@ have and what data you don't.</li>
 as for the data you appended to the Feed.</p>
 <a class="header" href="#implementation-guide" id="implementation-guide"><h1>Implementation Guide</h1></a>
 <a class="header" href="#appendix" id="appendix"><h1>Appendix</h1></a>
-<a class="header" href="#a---terminology" id="a---terminology"><h1>A - Terminology</h1></a>
+<p>The following sections contain reference material you may find useful in your
+Dat journey.</p>
+<a class="header" href="#terminology" id="terminology"><h1>Terminology</h1></a>
+<p>The following terms are used when describing the Dat Protocol.</p>
+<a class="header" href="#terminology-currently-in-use" id="terminology-currently-in-use"><h2>Terminology Currently in Use</h2></a>
+<ul>
+<li><strong>feed:</strong> The main data structure in Hypercore. Append-only log that uses
+multiple data structures and algorithms to safely store data.</li>
+<li><strong>data:</strong> Atomic pieces of data that are written to the feed by users.</li>
+<li><strong>keypair:</strong> An <code>Ed25519</code> keypair used to encrypt data with.</li>
+<li><strong>signature:</strong> Certificate that proves a data structure was created by a
+specific keypair.</li>
+<li><strong>tree:</strong> A binary tree mapped as a <code>flat-tree</code> to keep an index of the
+current data.</li>
+<li><strong>flat-tree:</strong> Mapping of a series of integers to a binary tree structure.</li>
+<li><strong>bitfield:</strong> Space-efficient data structure used to figure out which data you
+have and what data you don't. Meant to always be kept in memory because it's
+small enough.</li>
+<li><strong>run-length-encoding (RLE):</strong> Basic compression scheme used to compress
+bitfields when sending over the wire.</li>
+<li><strong>parent node:</strong> A parent has two children under it, and is always
+odd-numbered. Node 3 is the parent of 1 and 5.</li>
+<li><strong>leaf node:</strong> A node with no children. A leaf node is always even-numbered.
+Nodes 0, 2, 4, 6 and 8 are leaf nodes.</li>
+<li><strong>sibling node:</strong> The other node that shares a parent with the current node.
+For example nodes 4 and 6 are siblings.</li>
+<li><strong>uncle node:</strong> A parent's sibling. Node 1 is the uncle of nodes 4 and 6.</li>
+<li><strong>root node:</strong> A top-most node where the full tree under it is complete (e.g.
+all parent nodes have 2 children). Node 3 is a root node.</li>
+<li><strong>node span:</strong> The two nodes that are furthest away in the sub-tree. The span
+of node 1 is <code>0, 2</code>. The span of node 3 is <code>0, 6</code>.</li>
+<li><strong>right node span:</strong> The left-most node in the span. The right span of node 1
+is 2. The right span of node 3 is 6.</li>
+</ul>
 
                     </main>
 
