@@ -31,24 +31,24 @@ Take the following tree:
 - Node 5 contains the hash of hashes from nodes 4 and 6.
 - Node 3 contains the hash of hashes from nodes 1 and 5.
 
-## Merkle Trees In Hypercore
+## Hypercore Files
 A Hypercore's internal structure typically typically of these files:
 
-- __data file:__ a file containing the data added to the Hypercore.
-- __tree file:__ a file containing the Merkle tree of hashes derived from the
-    data.
-- __signature file:__ a file containing the cryptographic signatures of the
-    hashes in the tree file.
-- __bitfield file:__ a file to keep track of which data we have locally, and
-    which data is part of the network.
+- __data:__ a file containing the data added to the Hypercore.
+- __tree:__ a file containing the Merkle tree of hashes derived from the data.
+- __signatures:__ a file containing the cryptographic signatures of the hashes
+    in the tree file.
+- __bitfield:__ a file to keep track of which data we have locally, and which
+    data is part of the network.
 - __public key:__ a file containing the public key. This is used for verifying
     content.
 - __secret key:__ a file containing the signing key. This is used for adding new
     content, and is only available on Hypercores you've created.
 
-> We're referring to the file containing the Merkle tree as the "tree file"
-> to keep the terminology in this guide consistent with the Dat protocol
-> specifications and implementations.
+> The names we're using to refer to files here is also the way they're referred
+> to in Hypercore's specs and implementations. When inspecting a `.dat`
+> directory you'll see see these terms used as suffixes. For example
+> as `content.tree`, or `metadata.signatures`.
 
 The tree file is responsible of verifying the integrity of the data that's
 being appended to the feed.
@@ -63,8 +63,21 @@ of the entire tree file.
 > to store content directly on disk. For example in the case of (hyper)media
 > files.
 
+Let's look at how these files relate to each other to create a Hypercore feed.
+
+## Merkle Trees In Theory
+
 Whenever data is added to Hypercore, a new entry is created in the data file. We
-then then hash
+then hash the data, and write that hash to a tree file's leaf node. If the leaf
+node has a sibling, the parent node's hash can be computed. If the new parent
+node has a sibling, we can compute a new parent node above it. We recurse upward
+until no more parent nodes can be computed, at which point we'll have reached a
+root node.
+
+When there are no more hashes left to compute, we gather all the root nodes in
+the tree, concatenate them, hash them, and sign them with our private key. We
+then store the signature in our signatures file at the same index of the leaf
+node that was added.
 
 This might all sound a little abstract though, so let's look at an example.
 
