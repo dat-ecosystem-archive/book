@@ -31,19 +31,48 @@ Take the following tree:
 - Node 5 contains the hash of hashes from nodes 4 and 6.
 - Node 3 contains the hash of hashes from nodes 1 and 5.
 
-## How Are Merkle Trees Used In Hypercore?
-Each hypercore merkle tree is made up of two files:
+## Merkle Trees In Hypercore
+A Hypercore's internal structure typically typically of these files:
 
-- One file containing the tree of hashes (merkle file)
-- Another file containing the signatures of the hashes (signature file)
+- __data file:__ a file containing the data added to the Hypercore.
+- __tree file:__ a file containing the Merkle tree of hashes derived from the
+    data.
+- __signature file:__ a file containing the cryptographic signatures of the
+    hashes in the tree file.
+- __bitfield file:__ a file to keep track of which data we have locally, and
+    which data is part of the network.
+- __public key:__ a file containing the public key. This is used for verifying
+    content.
+- __secret key:__ a file containing the signing key. This is used for adding new
+    content, and is only available on Hypercores you've created.
 
-The responsibility of the Merkle tree is to verify the integrity of the data
-we're storing. This is done by completing the tree as far as possible on each
-write, and creating hashes of hashes all the way through.
+> We're referring to the file containing the Merkle tree as the "tree file"
+> to keep the terminology in this guide consistent with the Dat protocol
+> specifications and implementations.
 
-The responsibility of the signature file is to sign the integrity of the tree
-_at the entire tree at its current state._ This means that every entry into the
-signature file serves as a hash _for the entire Merkle file_.
+The tree file is responsible of verifying the integrity of the data that's
+being appended to the feed.
+
+The signature file is responsible for ensuring the integrity of the entire tree
+at any given state. Every entry in the signature file verifies the current state
+of the entire tree file.
+
+> Not every Hypercore is the same. In most implementations of Dat it's possible
+> to choose how data is stored. For server applications it makes sense to store
+> it in a single file. But for desktop applications it can sometimes make sense
+> to store content directly on disk. For example in the case of (hyper)media
+> files.
+
+Whenever data is added to Hypercore, a new entry is created in the data file. We
+then then hash
+
+This might all sound a little abstract though, so let's look at an example.
+
+## Merkle Trees In Practice
+We're starting off with an empty Hypercore feed. We're planning to add 5 pieces
+of data to it, one by one: `[A B C D E]`.
+
+Let's start off by adding the first piece of data to the file.
 
 ### Todo
 - If a data entry into the Merkle tree has a sibling, it'll try and complete as
