@@ -83,36 +83,143 @@ This might all sound a little abstract though, so let's look at an example.
 
 ## Merkle Trees In Practice
 We're starting off with an empty Hypercore feed. We're planning to add 5 pieces
-of data to it, one by one: `[A B C D E]`.
+of data to it, one by one: `[A B C D]`.
 
-Let's start off by adding the first piece of data to the file.
+### Entry 1
+Let's add our first piece of data to Hypercore. We insert the value "A" as our
+first entry. The entry index is prefixed with `index:`. In order, the following
+actions happen:
 
-### Todo
-- If a data entry into the Merkle tree has a sibling, it'll try and complete as
-  much of the tree above it as possible.
-- When a new entry to the tree is added, a new signature must be added to the
-  signatures file too.
-- The way signatures are added is by gathering all the Root nodes (e.g. nodes
-  with no siblings), and concatenating them, and computing their hash. Once the
-  hash is computed, we use our private key to sign the hash, and store the
-  resulting signature at the next unfilled position in the signatures tree.
+1. We append the data to the data file.
+2. We compute a hash from the data, and store it at index 0 in our tree file.
+3. We gather all root nodes from our tree file (which is just the node at index
+   0 right now), and compute a cryptographic signature from the hash.
+4. We append the signature to our signatures file.
 
+__data__
 ```txt
-Roots for record 0 (stored at leaf 0): [ 0 ]
-0: 0
-
-Roots for record 1 (stored at leaf 2): [ 1 ]
-0: 0─┐
-     1
-1: 2─┘
-
-Roots for record 2 (stored at leaf 4): [ 1, 4 ]
-0: 0─┐
-     1
-1: 2─┘
-
-2: 4
+1: A
 ```
+
+__tree__
+```txt
+1: 0
+```
+
+__signatures__
+```txt
+1: 0
+```
+
+### Entry 2
+Let's add our second entry to hypercore. We now have more nodes, which means
+things are a little different:
+
+1. We append the data to the data file.
+2. We compute a hash from the data, and store it at index `2` in our tree file.
+3. Because index `2` has a sibling hash, we compute a new parent hash, and store
+   it at index `1`.
+3. We gather all root nodes from our tree file, and compute a cryptographic
+   signature from the hash. The only root node currently available is at index
+   `1`.
+4. We append the signature to our signatures file.
+
+> When we talk about "computing a parent hash" it means we concatenate the
+> hashes from both child nodes, and hash the result. Hashes are always the same
+> length, which means every node in the tree is the same length.
+
+__data__
+```txt
+1: A
+2: B
+```
+
+__tree__
+```txt
+1: 0─┐
+     1
+2: 2─┘
+```
+
+__signatures__
+```txt
+1: sig(0)
+2: sig(1)
+```
+
+### Entry 3
+So far so good. We're well on our way to building a full tree-structure! Let's
+continue on our journey, and add our third entry: `C`.
+
+1. We append the third piece data to the data file at index 2.
+2. We compute a hash from the data, and store it at index `4` in our tree file.
+3. We now have two root hashes: `1` and `4`. So we concatenate them, hash the
+   result, and sign the result.
+   `1`.
+4. We append the signature to our signatures file.
+
+__data__
+```txt
+1: index: 0, data: A
+2: index: 1, data: B
+3: index: 2, data: C
+```
+
+__tree__
+```txt
+1: 0─┐
+     1
+2: 2─┘
+
+3: 4
+```
+
+__signatures__
+```txt
+1: sig(0)
+3: sig(1)
+3: sig(1 + 4)
+```
+
+### Entry 4
+Let's add the final piece of data to our feed. This will balance out a tree, and
+bring us back to only one root hash!
+
+1. We append the fourth piece data to the data file at index `3`.
+2. We compute a hash from the data, and store it at index `6` in our tree file.
+3. Our only root node is `3`, so we compute its hash, sign it, and compute the
+   signature.
+4. We append the signature to our signatures file.
+
+__data__
+```txt
+1: index: 0, data: A
+2: index: 1, data: B
+3: index: 2, data: C
+4: index: 3, data: D
+```
+
+__tree__
+```txt
+0: 0─┐
+     1─┐
+1: 2─┘ │
+       3
+2: 4─┐ │
+     5─┘
+3: 6─┘
+```
+
+__signatures__
+```txt
+1: sig(0)
+3: sig(1)
+3: sig(1 + 4)
+4: sig(3)
+```
+
+## Verifying A Merkle Tree
+TODO
 
 ## Root Nodes
 If the number of leaf nodes is a multiple of 2 the flat tree will only have a
