@@ -47,17 +47,22 @@ Consider this Indexed Bitfield, written as a sequence of bits:
 01011101000000
 ```
 
-If we take the same bits and express it as a flat tree, it looks like this:
+Because the bits are indexed as a flat-tree, we can print it as a tree
+structure:
 
 ```txt
        01
   01       00
 01  11   00  00
 ```
+By looking at the root node we can tell that there's nodes in the tree, but not
+yet _which_ nodes are in the tree. By going one level lower however, it becomes
+clear that there's nodes in one side of the tree, but no nodes in the other side
+of the tree. This means we only need to check the children of the left node to
+find out exactly which nodes we have.
 
-There's a fun implication here: a completely zeroed-out buffer is a valid
-Indexed Bitfield - it just means it's completely empty. Even if you express it
-as a tree.
+A fun fact here is also: a completely zeroed-out buffer is a valid Indexed
+Bitfield - it just means it's completely empty.
 
 ### Optimizing the Structure
 Looking at a byte and looking at a bit is the same cost in a computer. You want
