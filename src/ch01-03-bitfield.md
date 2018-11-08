@@ -113,7 +113,7 @@ If we want to set an index in a bitfield to `false`, it would mean we needed to
 flip a bit to `0`. Because we can only operate on bytes, the easiest way to
 achieve this is to apply a bitmask.
 
-If you consider the following lookup table, in binary notation:
+Consider the following lookup table, in binary notation:
 
 ```rust
 let data_update = vec![
@@ -128,8 +128,10 @@ let data_update = vec![
 ];
 ```
 
-If you take a byte, and you take the lookup table for the bit you want to flip,
-you can bitwise `&` them together to set the bit to zero.
+There are 8 entries in this table, all of which have a different position of
+which bit is set to zero. When you want to flip a bit to zero, you take the
+index of the bit you want to flip, look up the entry in the table, and bitwise
+AND the two numbers.
 
 ## Serialization
 For every piece of data there's going to be 1 bit in the Data Bitfield. And
@@ -149,4 +151,4 @@ So this translates to the following ratios:
 When sending data over the wire, we want to compress the bitfields further. An
 efficient way of doing this is by using Run Length Encoding (RLE).
 TODO: explain the module. For now read the README.
-- https://github.com/mafintosh/bitfield-rle
+- [mafintosh/bitfield-rle](https://github.com/mafintosh/bitfield-rle)
