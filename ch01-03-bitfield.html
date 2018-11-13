@@ -72,7 +72,7 @@
         </script>
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
-            <ol class="chapter"><li><a href="ch00-00-introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li><a href="ch01-00-key-concepts.html"><strong aria-hidden="true">2.</strong> Key Concepts</a></li><li><ol class="section"><li><a href="ch01-01-flat-tree.html"><strong aria-hidden="true">2.1.</strong> Flat Tree</a></li><li><a href="ch01-02-bitfield.html" class="active"><strong aria-hidden="true">2.2.</strong> Bitfield</a></li><li><a href="ch01-03-merkle-tree.html"><strong aria-hidden="true">2.3.</strong> Merkle Tree</a></li><li><a href="ch01-04-storage.html"><strong aria-hidden="true">2.4.</strong> Storage</a></li></ol></li><li><a href="ch02-00-implementation-guide.html"><strong aria-hidden="true">3.</strong> Implementation Guide</a></li><li><a href="ch03-00-appendix.html"><strong aria-hidden="true">4.</strong> Appendix</a></li><li><ol class="section"><li><a href="ch03-01-terminology.html"><strong aria-hidden="true">4.1.</strong> A - Terminology</a></li></ol></li></ol>
+            <ol class="chapter"><li><a href="ch00-00-introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li><a href="ch01-00-key-concepts.html"><strong aria-hidden="true">2.</strong> Key Concepts</a></li><li><ol class="section"><li><a href="ch01-01-flat-tree.html"><strong aria-hidden="true">2.1.</strong> Flat Tree</a></li><li><a href="ch01-02-merkle-tree.html"><strong aria-hidden="true">2.2.</strong> Merkle Tree</a></li><li><a href="ch01-03-bitfield.html" class="active"><strong aria-hidden="true">2.3.</strong> Bitfield</a></li><li><a href="ch01-04-storage.html"><strong aria-hidden="true">2.4.</strong> Storage</a></li></ol></li><li><a href="ch02-00-implementation-guide.html"><strong aria-hidden="true">3.</strong> Implementation Guide</a></li><li><a href="ch03-00-appendix.html"><strong aria-hidden="true">4.</strong> Appendix</a></li><li><ol class="section"><li><a href="ch03-01-terminology.html"><strong aria-hidden="true">4.1.</strong> A - Terminology</a></li></ol></li></ol>
         </nav>
 
         <div id="page-wrapper" class="page-wrapper">
@@ -173,14 +173,19 @@ made up out of 2 bits.</p>
 <p>Consider this Indexed Bitfield, written as a sequence of bits:</p>
 <pre><code class="language-txt">01011101000000
 </code></pre>
-<p>If we take the same bits and express it as a flat tree, it looks like this:</p>
+<p>Because the bits are indexed as a flat-tree, we can print it as a tree
+structure:</p>
 <pre><code class="language-txt">       01
   01       00
 01  11   00  00
 </code></pre>
-<p>There's a fun implication here: a completely zeroed-out buffer is a valid
-Indexed Bitfield - it just means it's completely empty. Even if you express it
-as a tree.</p>
+<p>By looking at the root node we can tell that there's nodes in the tree, but not
+yet <em>which</em> nodes are in the tree. By going one level lower however, it becomes
+clear that there's nodes in one side of the tree, but no nodes in the other side
+of the tree. This means we only need to check the children of the left node to
+find out exactly which nodes we have.</p>
+<p>A fun fact here is also: a completely zeroed-out buffer is a valid Indexed
+Bitfield - it just means it's completely empty.</p>
 <a class="header" href="#optimizing-the-structure" id="optimizing-the-structure"><h3>Optimizing the Structure</h3></a>
 <p>Looking at a byte and looking at a bit is the same cost in a computer. You want
 to optimize for getting the most information possible when looking at a byte.</p>
@@ -218,7 +223,7 @@ the Indexed Bitfield.</p>
 <p>If we want to set an index in a bitfield to <code>false</code>, it would mean we needed to
 flip a bit to <code>0</code>. Because we can only operate on bytes, the easiest way to
 achieve this is to apply a bitmask.</p>
-<p>If you consider the following lookup table, in binary notation:</p>
+<p>Consider the following lookup table, in binary notation:</p>
 <pre><pre class="playpen"><code class="language-rust">
 # #![allow(unused_variables)]
 #fn main() {
@@ -233,8 +238,10 @@ let data_update = vec![
   0b11111110, // 254
 ];
 #}</code></pre></pre>
-<p>If you take a byte, and you take the lookup table for the bit you want to flip,
-you can bitwise <code>&amp;</code> them together to set the bit to zero.</p>
+<p>There are 8 entries in this table, all of which have a different position of
+which bit is set to zero. When you want to flip a bit to zero, you take the
+index of the bit you want to flip, look up the entry in the table, and bitwise
+AND the two numbers.</p>
 <a class="header" href="#serialization" id="serialization"><h2>Serialization</h2></a>
 <p>For every piece of data there's going to be 1 bit in the Data Bitfield. And
 2 bits in the Merkle Tree Bitfield because there's a parent node and a leaf
@@ -253,7 +260,7 @@ Index Scheme, totalling 4 bits in the Indexed Bitfield.</p>
 efficient way of doing this is by using Run Length Encoding (RLE).
 TODO: explain the module. For now read the README.</p>
 <ul>
-<li>https://github.com/mafintosh/bitfield-rle</li>
+<li><a href="https://github.com/mafintosh/bitfield-rle">mafintosh/bitfield-rle</a></li>
 </ul>
 
                     </main>
@@ -261,13 +268,13 @@ TODO: explain the module. For now read the README.</p>
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
                         
-                            <a rel="prev" href="ch01-01-flat-tree.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="ch01-02-merkle-tree.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
                         
 
                         
-                            <a rel="next" href="ch01-03-merkle-tree.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next" href="ch01-04-storage.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
                         
@@ -279,13 +286,13 @@ TODO: explain the module. For now read the README.</p>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
                 
-                    <a href="ch01-01-flat-tree.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a href="ch01-02-merkle-tree.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
                 
 
                 
-                    <a href="ch01-03-merkle-tree.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a href="ch01-04-storage.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
                 
