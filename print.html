@@ -644,7 +644,7 @@ data to the Feed. This includes Signatures, Hashes, Root Nodes and more.</p>
 <ul>
 <li><strong>data:</strong> The concatenated data that was appended to the feed.</li>
 <li><strong>merkle tree:</strong> The hashes of the data, and hashes of hashes of data - stored
-in a tree. Also stores the length of the datta.</li>
+in a tree. Also stores the length of the data.</li>
 <li><strong>signatures:</strong> We take the Root Hash of the Merkle Tree, and sign that one.</li>
 <li><strong>bitfield:</strong> Space-efficient data structure used to figure out which data you
 have and what data you don't.</li>
@@ -653,6 +653,30 @@ have and what data you don't.</li>
 </ul>
 <p>When you produce a new Signature, the index for the Signature is the same index
 as for the data you appended to the Feed.</p>
+<a class="header" href="#random-access-storage" id="random-access-storage"><h2>Random Access Storage</h2></a>
+<p>Hypercore supports multiple persistence backends through the
+<code>random-access-storage</code> interface. Each storage backend adheres to a
+standardized interface to write, read and delete ranges of bytes.</p>
+<p>There are many different backends available, but generally all implementations
+implement the following backends:</p>
+<ul>
+<li><code>random-access-memory</code>: stores bytes in-memory. Ideal for testing, and
+providing an initial implementation.</li>
+<li><code>random-access-disk</code>: stores bytes on disk. Generally useful as Hypercore's
+first persistent backend.</li>
+</ul>
+<p>Because Hypercore and Dat support partially downloading data, a useful feature
+is to implement <em>sparse persistence</em>. This means that we can write data into
+memory or to disk with spaces in between, but without paying any cost.</p>
+<p>For example if we want to write bytes 0 to 10, and bytes 9877 to 11000, the
+space between 10 and 9877 should not cost us anything.</p>
+<p>This is generally implemented using <em>pagers</em>. A pager is a vector (or array)
+where each entry is a range. If we want to access a particular range, we lookup
+the correct entry in the pager, and allocate it if needed. This way we preserve
+space we don't use.</p>
+<p>It's generally good to use 1kb pages when accessing memory, and 4kb pages when
+accessing disk (SSD). This ensures that data will be written as continuous
+chunks, which is good for performance.</p>
 <a class="header" href="#implementation-guide" id="implementation-guide"><h1>Implementation Guide</h1></a>
 <a class="header" href="#appendix" id="appendix"><h1>Appendix</h1></a>
 <p>The following sections contain reference material you may find useful in your
