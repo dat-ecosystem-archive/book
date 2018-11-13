@@ -47,17 +47,22 @@ Consider this Indexed Bitfield, written as a sequence of bits:
 01011101000000
 ```
 
-If we take the same bits and express it as a flat tree, it looks like this:
+Because the bits are indexed as a flat-tree, we can print it as a tree
+structure:
 
 ```txt
        01
   01       00
 01  11   00  00
 ```
+By looking at the root node we can tell that there's nodes in the tree, but not
+yet _which_ nodes are in the tree. By going one level lower however, it becomes
+clear that there's nodes in one side of the tree, but no nodes in the other side
+of the tree. This means we only need to check the children of the left node to
+find out exactly which nodes we have.
 
-There's a fun implication here: a completely zeroed-out buffer is a valid
-Indexed Bitfield - it just means it's completely empty. Even if you express it
-as a tree.
+A fun fact here is also: a completely zeroed-out buffer is a valid Indexed
+Bitfield - it just means it's completely empty.
 
 ### Optimizing the Structure
 Looking at a byte and looking at a bit is the same cost in a computer. You want
@@ -108,7 +113,7 @@ If we want to set an index in a bitfield to `false`, it would mean we needed to
 flip a bit to `0`. Because we can only operate on bytes, the easiest way to
 achieve this is to apply a bitmask.
 
-If you consider the following lookup table, in binary notation:
+Consider the following lookup table, in binary notation:
 
 ```rust
 let data_update = vec![
@@ -123,8 +128,10 @@ let data_update = vec![
 ];
 ```
 
-If you take a byte, and you take the lookup table for the bit you want to flip,
-you can bitwise `&` them together to set the bit to zero.
+There are 8 entries in this table, all of which have a different position of
+which bit is set to zero. When you want to flip a bit to zero, you take the
+index of the bit you want to flip, look up the entry in the table, and bitwise
+AND the two numbers.
 
 ## Serialization
 For every piece of data there's going to be 1 bit in the Data Bitfield. And
@@ -144,4 +151,4 @@ So this translates to the following ratios:
 When sending data over the wire, we want to compress the bitfields further. An
 efficient way of doing this is by using Run Length Encoding (RLE).
 TODO: explain the module. For now read the README.
-- https://github.com/mafintosh/bitfield-rle
+- [mafintosh/bitfield-rle](https://github.com/mafintosh/bitfield-rle)
