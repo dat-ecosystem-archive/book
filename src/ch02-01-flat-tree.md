@@ -11,12 +11,16 @@ relative to each other.
 Returns both children of a node. It cannot return any children when querying a
 leaf node, so the result must be a `Null`, `Maybe`, or `Option` type, depending
 on the language used.
-
 ```rust
 pub fn children_with_depth(i: usize, depth: usize) -> Option<(usize, usize)>
 ```
 
-### Count
+### count
+Returns how many nodes are under the tree that the node spans.
+```rust
+pub fn count_with_depth(i: usize) -> usize
+```
+
 ### depth
 Returns the depth of a node at a given index.
 is removed from the left-most node at its current depth
@@ -25,6 +29,12 @@ pub fn depth(i: usize) -> usize
 ```
 
 ### full_roots
+Returns a list of all the full roots (subtrees where all nodes have either 2 or
+0 children).
+```rust
+pub fn full_roots(i: usize) -> Vec<usize>{
+```
+
 ### index
 Return the index for a node at at given depth and offset.
 ```rust
@@ -46,9 +56,15 @@ pub fn left_span(i: usize) -> usize
 ### offset
 Returns the offset of a node at a given index. The offset of a node is how far
 it is removed from the left-most node at its current depth
+```rust
+pub fn offset(i: usize) -> usize
+```
 
 ### parent
 Returns the parent of a node.
+```rust
+pub fn parent(i: usize) -> usize
+```
 
 ### right_child
 Return the right child of the node at index.
@@ -57,8 +73,12 @@ pub fn right_child(i: usize) -> Option<usize>
 ```
 
 ### right_span
-### left_span
 Returns the right-most child of the node at index.
+```rust
+pub fn right_span(i: usize) -> usize
+```
+### left_span
+Returns the left-most child of the node at index.
 ```rust
 pub fn right_span(i: usize) -> usize
 ```
@@ -105,10 +125,10 @@ Sometimes when calling multiple functions on the same index, depending on the
 execution environment it can be efficient to reuse the `depth` parameter.
 
 However if the optimized depth method is used, there's no strict need to expose
-the `with_depth*` methods, as the compiler will detect the duplicate computation,
-and remove it anyway. Mileage may vary, but this technique has been tested on
-LLVM output for the Rust version. In the worst case there might be penalty of up
-3 instructions per call, which seems like a negligible penalty.
+the `with_depth*` methods, as the compiler will detect the duplicate
+computation, and remove it anyway. Mileage may vary, but this technique has been
+tested on LLVM output for the Rust version. In the worst case there might be
+penalty of up 3 instructions per call, which seems like a negligible penalty.
 
 ### Calculate children
 Calculating whether a node has children can be sped up by quickly checking if a
@@ -119,3 +139,7 @@ child node, so it can't have child nodes.
 Similarly for spans. If an even number is targeted, it is at the bottom of the
 tree, so it will only span itself. Therefor it's easy to implement an `is_even`
 check, and return the index that was passed in if it's true.
+
+## Full Roots
+To prevent allocations `full-roots` could also write to either a pre-allocated
+vector, or a stack-allocated collection instead.
