@@ -322,7 +322,7 @@ hashes of data, and all uneven numbers (parent nodes) contain hashes.</p>
 <li>Node 3 contains the hash of hashes from nodes 1 and 5.</li>
 </ul>
 <a class="header" href="#hypercore-files" id="hypercore-files"><h2>Hypercore Files</h2></a>
-<p>A Hypercore's internal structure typically typically of these files:</p>
+<p>A Hypercore's internal structure typically consist of these files:</p>
 <ul>
 <li><strong>data:</strong> a file containing the data added to the Hypercore.</li>
 <li><strong>tree:</strong> a file containing the Merkle tree of hashes derived from the data.</li>
@@ -338,7 +338,7 @@ content, and is only available on Hypercores you've created.</li>
 <blockquote>
 <p>The names we're using to refer to files here is also the way they're referred
 to in Hypercore's specs and implementations. When inspecting a <code>.dat</code>
-directory you'll see see these terms used as suffixes. For example
+directory you'll see these terms used as suffixes. For example
 as <code>content.tree</code>, or <code>metadata.signatures</code>.</p>
 </blockquote>
 <p>The tree file is responsible of verifying the integrity of the data that's
@@ -367,7 +367,7 @@ then store the signature in our signatures file at the same index of the leaf
 node that was added.</p>
 <p>This might all sound a little abstract though, so let's look at an example.</p>
 <a class="header" href="#merkle-trees-in-practice" id="merkle-trees-in-practice"><h2>Merkle Trees In Practice</h2></a>
-<p>We're starting off with an empty Hypercore feed. We're planning to add 5 pieces
+<p>We're starting off with an empty Hypercore feed. We're planning to add 4 pieces
 of data to it, one by one: <code>[A B C D]</code>.</p>
 <a class="header" href="#entry-1" id="entry-1"><h3>Entry 1</h3></a>
 <p>Let's add our first piece of data to Hypercore. We insert the value &quot;A&quot; as our
