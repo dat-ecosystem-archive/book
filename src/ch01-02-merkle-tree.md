@@ -32,7 +32,7 @@ Take the following tree:
 - Node 3 contains the hash of hashes from nodes 1 and 5.
 
 ## Hypercore Files
-A Hypercore's internal structure typically typically of these files:
+A Hypercore's internal structure typically consist of these files:
 
 - __data:__ a file containing the data added to the Hypercore.
 - __tree:__ a file containing the Merkle tree of hashes derived from the data.
@@ -47,7 +47,7 @@ A Hypercore's internal structure typically typically of these files:
 
 > The names we're using to refer to files here is also the way they're referred
 > to in Hypercore's specs and implementations. When inspecting a `.dat`
-> directory you'll see see these terms used as suffixes. For example
+> directory you'll see these terms used as suffixes. For example
 > as `content.tree`, or `metadata.signatures`.
 
 The tree file is responsible of verifying the integrity of the data that's
@@ -82,7 +82,7 @@ node that was added.
 This might all sound a little abstract though, so let's look at an example.
 
 ## Merkle Trees In Practice
-We're starting off with an empty Hypercore feed. We're planning to add 5 pieces
+We're starting off with an empty Hypercore feed. We're planning to add 4 pieces
 of data to it, one by one: `[A B C D]`.
 
 ### Entry 1
