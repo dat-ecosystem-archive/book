@@ -29,3 +29,12 @@ methods have to be passed in. The following methods are generally required:
 In strictly typed languages, both the input `data`, and `hash` need to be passed
 as type parameters into the generic function. In dynamically typed languages,
 both can generally be expressed as byte array.
+
+## Async
+In practice it's perfectly fine to write the stream as a synchronous method.
+For most implementations of Dat I/O typically tends to be the bottleneck, but on
+a live system that might not always be the case (e.g. contention with other
+resources). So to improve the overall performance of `merkle-tree-stream`, it
+can be useful to schedule work over multiple cores.
+
+The first candidate for parallelization is hashing the leaf nodes.
