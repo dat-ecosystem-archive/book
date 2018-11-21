@@ -65,3 +65,7 @@ The exact underlying mechanisms for storing and synchronizing nodes is a topic
 that could use more research. But starting with a read-write lock around the
 internal vector of hashes, and creating a task queue seems like the right
 starting point.
+
+## References
+- [datrs/merkle-tree-stream](https://github.com/datrs/merkle-tree-stream)
+- [mafintosh/merkle-tree-stream](https://github.com/mafintosh/merkle-tree-stream)
