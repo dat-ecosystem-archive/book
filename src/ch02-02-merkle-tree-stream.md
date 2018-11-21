@@ -37,4 +37,31 @@ a live system that might not always be the case (e.g. contention with other
 resources). So to improve the overall performance of `merkle-tree-stream`, it
 can be useful to schedule work over multiple cores.
 
-The first candidate for parallelization is hashing the leaf nodes.
+The first candidate for parallelization is the hashing of the leaf nodes. Unlike
+the parent nodes, the hashes in the leaf nodes are just functions of data, so
+they can be freely scheduled on different cores without any problem.
+
+A bigger challenge is when creating hashes for the parent nodes. Because each
+parent depends on having two child nodes, it means you can't compute a parent
+node before its children have been computed. This means that that if we're only
+adding a single entry to the stream it cannot be parallelized, because each
+hash depends on the hash that came before it.
+
+Take the following tree:
+```txt
+  0──┐
+     1──┐
+  2──┘  │
+        3
+  4──┐  │
+     5──┘
+  6──┘
+```
+
+Computing the hashes of `[0 2 4 6]` are parallizable. Once those are complete,
+`[1 5]` can be computed. And then `[3]` can be computed.
+
+The exact underlying mechanisms for storing and synchronizing nodes is a topic
+that could use more research. But starting with a read-write lock around the
+internal vector of hashes, and creating a task queue seems like the right
+starting point.
