@@ -50,7 +50,7 @@ A Hypercore's internal structure typically consist of these files:
 > directory you'll see these terms used as suffixes. For example
 > as `content.tree`, or `metadata.signatures`.
 
-The tree file is responsible of verifying the integrity of the data that's
+The tree file is responsible for verifying the integrity of the data that's
 being appended to the feed.
 
 The signature file is responsible for ensuring the integrity of the entire tree
