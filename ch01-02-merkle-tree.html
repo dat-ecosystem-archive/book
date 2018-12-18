@@ -185,7 +185,7 @@ to in Hypercore's specs and implementations. When inspecting a <code>.dat</code>
 directory you'll see these terms used as suffixes. For example
 as <code>content.tree</code>, or <code>metadata.signatures</code>.</p>
 </blockquote>
-<p>The tree file is responsible of verifying the integrity of the data that's
+<p>The tree file is responsible for verifying the integrity of the data that's
 being appended to the feed.</p>
 <p>The signature file is responsible for ensuring the integrity of the entire tree
 at any given state. Every entry in the signature file verifies the current state
@@ -215,113 +215,109 @@ node that was added.</p>
 of data to it, one by one: <code>[A B C D]</code>.</p>
 <a class="header" href="#entry-1" id="entry-1"><h3>Entry 1</h3></a>
 <p>Let's add our first piece of data to Hypercore. We insert the value &quot;A&quot; as our
-first entry. The entry index is prefixed with <code>index:</code>. In order, the following
-actions happen:</p>
+first entry. In order, the following actions happen:</p>
 <ol>
 <li>We append the data to the data file.</li>
-<li>We compute a hash from the data, and store it at index 0 in our tree file.</li>
+<li>We compute a hash (<code>#0</code>) from the data, and store it at index <code>0</code> in our tree file.</li>
 <li>We gather all root nodes from our tree file (which is just the node at index
 0 right now), and compute a cryptographic signature from the hash.</li>
 <li>We append the signature to our signatures file.</li>
 </ol>
 <p><strong>data</strong></p>
-<pre><code class="language-txt">1: A
+<pre><code class="language-txt">0: A
 </code></pre>
 <p><strong>tree</strong></p>
-<pre><code class="language-txt">1: 0
+<pre><code class="language-txt">0: #0 = hash(data[0])
 </code></pre>
 <p><strong>signatures</strong></p>
-<pre><code class="language-txt">1: 0
+<pre><code class="language-txt">0: sig(#0)
 </code></pre>
 <a class="header" href="#entry-2" id="entry-2"><h3>Entry 2</h3></a>
 <p>Let's add our second entry to hypercore. We now have more nodes, which means
 things are a little different:</p>
 <ol>
 <li>We append the data to the data file.</li>
-<li>We compute a hash from the data, and store it at index <code>2</code> in our tree file.</li>
-<li>Because index <code>2</code> has a sibling hash, we compute a new parent hash, and store
+<li>We compute a hash from the data (<code>#2</code>), and store it at index <code>1</code> in our tree file.</li>
+<li>Because <code>#2</code> has a sibling hash, we compute a new parent hash (<code>#1</code>), and store
 it at index <code>1</code>.</li>
 <li>We gather all root nodes from our tree file, and compute a cryptographic
-signature from the hash. The only root node currently available is at index
-<code>1</code>.</li>
+signature from the hash. The only root node currently available is <code>#1</code>. Note that while we compute <code>#1</code> from our tree file, we do not store it there. Only even-numbered hashes are stored in the tree file as the odd-numbered ones can be calculated from them.</li>
 <li>We append the signature to our signatures file.</li>
 </ol>
 <blockquote>
-<p>When we talk about &quot;computing a parent hash&quot; it means we concatenate the
+<p>When we talk about &quot;computing a parent hash&quot; it means we concatenate (<code>+</code>) the
 hashes from both child nodes, and hash the result. Hashes are always the same
 length, which means every node in the tree is the same length.</p>
 </blockquote>
 <p><strong>data</strong></p>
-<pre><code class="language-txt">1: A
-2: B
+<pre><code class="language-txt">0: A
+1: B
 </code></pre>
 <p><strong>tree</strong></p>
-<pre><code class="language-txt">1: 0─┐
-     1
-2: 2─┘
+<pre><code class="language-txt">0: #0 = hash(data[0]) ─┐
+                       #1 = hash(#0 + #2)
+1: #2 = hash(data[1]) ─┘
 </code></pre>
 <p><strong>signatures</strong></p>
-<pre><code class="language-txt">1: sig(0)
-2: sig(1)
+<pre><code class="language-txt">0: sig(#0)
+1: sig(#1)
 </code></pre>
 <a class="header" href="#entry-3" id="entry-3"><h3>Entry 3</h3></a>
 <p>So far so good. We're well on our way to building a full tree-structure! Let's
 continue on our journey, and add our third entry: <code>C</code>.</p>
 <ol>
-<li>We append the third piece data to the data file at index 2.</li>
-<li>We compute a hash from the data, and store it at index <code>4</code> in our tree file.</li>
-<li>We now have two root hashes: <code>1</code> and <code>4</code>. So we concatenate them, hash the
-result, and sign the result.
-<code>1</code>.</li>
+<li>We append the third piece data to the data file at index <code>2</code>.</li>
+<li>We compute a hash from the data (<code>#4</code>), and store it at index <code>2</code> in our tree file.</li>
+<li>We now have two root hashes: <code>#1</code> and <code>#4</code>. So we concatenate them, hash the
+result, and sign the result.</li>
 <li>We append the signature to our signatures file.</li>
 </ol>
 <p><strong>data</strong></p>
-<pre><code class="language-txt">1: index: 0, data: A
-2: index: 1, data: B
-3: index: 2, data: C
+<pre><code class="language-txt">0: A
+1: B
+2: C
 </code></pre>
 <p><strong>tree</strong></p>
-<pre><code class="language-txt">1: 0─┐
-     1
-2: 2─┘
+<pre><code class="language-txt">0: #0 = hash(data[0]) ─┐
+                       #1 = hash(tree[0] + tree[1])
+1: #2 = hash(data[1]) ─┘
 
-3: 4
+2: #4 = hash(data[2])
 </code></pre>
 <p><strong>signatures</strong></p>
-<pre><code class="language-txt">1: sig(0)
-3: sig(1)
-3: sig(1 + 4)
+<pre><code class="language-txt">0: sig(#0)
+1: sig(#1)
+2: sig(#1 + #4)
 </code></pre>
 <a class="header" href="#entry-4" id="entry-4"><h3>Entry 4</h3></a>
 <p>Let's add the final piece of data to our feed. This will balance out a tree, and
 bring us back to only one root hash!</p>
 <ol>
 <li>We append the fourth piece data to the data file at index <code>3</code>.</li>
-<li>We compute a hash from the data, and store it at index <code>6</code> in our tree file.</li>
-<li>Our only root node is <code>3</code>, so we compute its hash, sign it, and compute the
-signature.</li>
+<li>We compute a hash from the data (<code>#6</code>), and store it at index <code>3</code> in our tree file.</li>
+<li>Our only root hash is <code>#3</code>, so we sign it and compute the signature.</li>
 <li>We append the signature to our signatures file.</li>
 </ol>
 <p><strong>data</strong></p>
-<pre><code class="language-txt">1: index: 0, data: A
-2: index: 1, data: B
-3: index: 2, data: C
-4: index: 3, data: D
+<pre><code class="language-txt">0: A
+1: B
+2: C
+3: D
 </code></pre>
 <p><strong>tree</strong></p>
-<pre><code class="language-txt">0: 0─┐
-     1─┐
-1: 2─┘ │
-       3
-2: 4─┐ │
-     5─┘
-3: 6─┘
+<pre><code class="language-txt">0: #0 = hash(data[0]) ─┐
+                       #1 = hash(#0 + #2) ─┐
+1: #2 = hash(data[1]) ─┘                   │
+                                           #3 = hash(#1 + #5)
+2: #4 = hash(data[2]) ─┐                   │
+                       #5 = hash(#4 + #6) ─┘
+3: #6 = hash(data[3]) ─┘
 </code></pre>
 <p><strong>signatures</strong></p>
-<pre><code class="language-txt">1: sig(0)
-3: sig(1)
-3: sig(1 + 4)
-4: sig(3)
+<pre><code class="language-txt">0: sig(#0)
+1: sig(#1)
+2: sig(#1 + #4)
+3: sig(#3)
 </code></pre>
 <a class="header" href="#verifying-a-merkle-tree" id="verifying-a-merkle-tree"><h2>Verifying A Merkle Tree</h2></a>
 <p>TODO</p>
