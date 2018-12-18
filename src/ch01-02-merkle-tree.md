@@ -50,7 +50,7 @@ A Hypercore's internal structure typically consist of these files:
 > directory you'll see these terms used as suffixes. For example
 > as `content.tree`, or `metadata.signatures`.
 
-The tree file is responsible of verifying the integrity of the data that's
+The tree file is responsible for verifying the integrity of the data that's
 being appended to the feed.
 
 The signature file is responsible for ensuring the integrity of the entire tree
@@ -87,28 +87,27 @@ of data to it, one by one: `[A B C D]`.
 
 ### Entry 1
 Let's add our first piece of data to Hypercore. We insert the value "A" as our
-first entry. The entry index is prefixed with `index:`. In order, the following
-actions happen:
+first entry. In order, the following actions happen:
 
 1. We append the data to the data file.
-2. We compute a hash from the data, and store it at index 0 in our tree file.
+2. We compute a hash (`#0`) from the data, and store it at index `0` in our tree file.
 3. We gather all root nodes from our tree file (which is just the node at index
    0 right now), and compute a cryptographic signature from the hash.
 4. We append the signature to our signatures file.
 
 __data__
 ```txt
-1: A
+0: A
 ```
 
 __tree__
 ```txt
-1: 0
+0: #0 = hash(data[0])
 ```
 
 __signatures__
 ```txt
-1: 0
+0: sig(#0)
 ```
 
 ### Entry 2
@@ -116,69 +115,67 @@ Let's add our second entry to hypercore. We now have more nodes, which means
 things are a little different:
 
 1. We append the data to the data file.
-2. We compute a hash from the data, and store it at index `2` in our tree file.
-3. Because index `2` has a sibling hash, we compute a new parent hash, and store
+2. We compute a hash from the data (`#2`), and store it at index `1` in our tree file.
+3. Because `#2` has a sibling hash, we compute a new parent hash (`#1`), and store
    it at index `1`.
 3. We gather all root nodes from our tree file, and compute a cryptographic
-   signature from the hash. The only root node currently available is at index
-   `1`.
+   signature from the hash. The only root node currently available is `#1`. Note that while we compute `#1` from our tree file, we do not store it there. Only even-numbered hashes are stored in the tree file as the odd-numbered ones can be calculated from them.
 4. We append the signature to our signatures file.
 
-> When we talk about "computing a parent hash" it means we concatenate the
+> When we talk about "computing a parent hash" it means we concatenate (`+`) the
 > hashes from both child nodes, and hash the result. Hashes are always the same
 > length, which means every node in the tree is the same length.
 
 __data__
 ```txt
-1: A
-2: B
+0: A
+1: B
 ```
 
 __tree__
 ```txt
-1: 0─┐
-     1
-2: 2─┘
+0: #0 = hash(data[0]) ─┐
+                       #1 = hash(#0 + #2)
+1: #2 = hash(data[1]) ─┘
 ```
 
 __signatures__
 ```txt
-1: sig(0)
-2: sig(1)
+0: sig(#0)
+1: sig(#1)
 ```
 
 ### Entry 3
 So far so good. We're well on our way to building a full tree-structure! Let's
 continue on our journey, and add our third entry: `C`.
 
-1. We append the third piece data to the data file at index 2.
-2. We compute a hash from the data, and store it at index `4` in our tree file.
-3. We now have two root hashes: `1` and `4`. So we concatenate them, hash the
+1. We append the third piece data to the data file at index `2`.
+2. We compute a hash from the data (`#4`), and store it at index `2` in our tree file.
+3. We now have two root hashes: `#1` and `#4`. So we concatenate them, hash the
    result, and sign the result.
-   `1`.
 4. We append the signature to our signatures file.
 
 __data__
 ```txt
-1: index: 0, data: A
-2: index: 1, data: B
-3: index: 2, data: C
+0: A
+1: B
+2: C
 ```
 
 __tree__
 ```txt
-1: 0─┐
-     1
-2: 2─┘
+0: #0 = hash(data[0]) ─┐
+                       #1 = hash(tree[0] + tree[1])
+1: #2 = hash(data[1]) ─┘
 
-3: 4
+2: #4 = hash(data[2])
 ```
 
 __signatures__
 ```txt
-1: sig(0)
-3: sig(1)
-3: sig(1 + 4)
+0: sig(#0)
+1: sig(#1)
+2: sig(#1 + #4)
 ```
 
 ### Entry 4
@@ -186,36 +183,35 @@ Let's add the final piece of data to our feed. This will balance out a tree, and
 bring us back to only one root hash!
 
 1. We append the fourth piece data to the data file at index `3`.
-2. We compute a hash from the data, and store it at index `6` in our tree file.
-3. Our only root node is `3`, so we compute its hash, sign it, and compute the
-   signature.
+2. We compute a hash from the data (`#6`), and store it at index `3` in our tree file.
+3. Our only root hash is `#3`, so we sign it and compute the signature.
 4. We append the signature to our signatures file.
 
 __data__
 ```txt
-1: index: 0, data: A
-2: index: 1, data: B
-3: index: 2, data: C
-4: index: 3, data: D
+0: A
+1: B
+2: C
+3: D
 ```
 
 __tree__
 ```txt
-0: 0─┐
-     1─┐
-1: 2─┘ │
-       3
-2: 4─┐ │
-     5─┘
-3: 6─┘
+0: #0 = hash(data[0]) ─┐
+                       #1 = hash(#0 + #2) ─┐
+1: #2 = hash(data[1]) ─┘                   │
+                                           #3 = hash(#1 + #5)
+2: #4 = hash(data[2]) ─┐                   │
+                       #5 = hash(#4 + #6) ─┘
+3: #6 = hash(data[3]) ─┘
 ```
 
 __signatures__
 ```txt
-1: sig(0)
-3: sig(1)
-3: sig(1 + 4)
-4: sig(3)
+0: sig(#0)
+1: sig(#1)
+2: sig(#1 + #4)
+3: sig(#3)
 ```
 
 ## Verifying A Merkle Tree
