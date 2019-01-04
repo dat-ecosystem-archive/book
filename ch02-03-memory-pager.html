@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Storage - </title>
+        <title>Memory Pager - </title>
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -72,7 +72,7 @@
         </script>
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
-            <ol class="chapter"><li><a href="ch00-00-introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li><a href="ch01-00-key-concepts.html"><strong aria-hidden="true">2.</strong> Key Concepts</a></li><li><ol class="section"><li><a href="ch01-01-flat-tree.html"><strong aria-hidden="true">2.1.</strong> Flat Tree</a></li><li><a href="ch01-02-merkle-tree.html"><strong aria-hidden="true">2.2.</strong> Merkle Tree</a></li><li><a href="ch01-03-bitfield.html"><strong aria-hidden="true">2.3.</strong> Bitfield</a></li><li><a href="ch01-04-storage.html" class="active"><strong aria-hidden="true">2.4.</strong> Storage</a></li></ol></li><li><a href="ch02-00-implementation-guide.html"><strong aria-hidden="true">3.</strong> Implementation Guide</a></li><li><ol class="section"><li><a href="ch02-01-flat-tree.html"><strong aria-hidden="true">3.1.</strong> Flat Tree</a></li><li><a href="ch02-02-merkle-tree-stream.html"><strong aria-hidden="true">3.2.</strong> Merkle Tree Stream</a></li><li><a href="ch02-03-memory-pager.html"><strong aria-hidden="true">3.3.</strong> Memory Pager</a></li></ol></li><li><a href="ch03-00-appendix.html"><strong aria-hidden="true">4.</strong> Appendix</a></li><li><ol class="section"><li><a href="ch03-01-terminology.html"><strong aria-hidden="true">4.1.</strong> A - Terminology</a></li></ol></li></ol>
+            <ol class="chapter"><li><a href="ch00-00-introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li><a href="ch01-00-key-concepts.html"><strong aria-hidden="true">2.</strong> Key Concepts</a></li><li><ol class="section"><li><a href="ch01-01-flat-tree.html"><strong aria-hidden="true">2.1.</strong> Flat Tree</a></li><li><a href="ch01-02-merkle-tree.html"><strong aria-hidden="true">2.2.</strong> Merkle Tree</a></li><li><a href="ch01-03-bitfield.html"><strong aria-hidden="true">2.3.</strong> Bitfield</a></li><li><a href="ch01-04-storage.html"><strong aria-hidden="true">2.4.</strong> Storage</a></li></ol></li><li><a href="ch02-00-implementation-guide.html"><strong aria-hidden="true">3.</strong> Implementation Guide</a></li><li><ol class="section"><li><a href="ch02-01-flat-tree.html"><strong aria-hidden="true">3.1.</strong> Flat Tree</a></li><li><a href="ch02-02-merkle-tree-stream.html"><strong aria-hidden="true">3.2.</strong> Merkle Tree Stream</a></li><li><a href="ch02-03-memory-pager.html" class="active"><strong aria-hidden="true">3.3.</strong> Memory Pager</a></li></ol></li><li><a href="ch03-00-appendix.html"><strong aria-hidden="true">4.</strong> Appendix</a></li><li><ol class="section"><li><a href="ch03-01-terminology.html"><strong aria-hidden="true">4.1.</strong> A - Terminology</a></li></ol></li></ol>
         </nav>
 
         <div id="page-wrapper" class="page-wrapper">
@@ -136,73 +136,107 @@
 
                 <div id="content" class="content">
                     <main>
-                        <a class="header" href="#storage" id="storage"><h1>Storage</h1></a>
-<p>You can represent a binary tree in a simple flat list using the following
-structure:</p>
-<pre><code class="language-txt">      3
-  1       5
-0   2   4   6  ...
+                        <a class="header" href="#memory-pager" id="memory-pager"><h1>memory-pager</h1></a>
+<p>Data in Hypercore streams can be replicated out of order. This means that you
+could both have the first message in a feed, and the millionth message in a
+feed. To ensure that we don't allocate space for a million messages when we only
+have two we make use of a data structure called a <em>memory pager</em>.</p>
+<p>Memory pagers work by having a vector of pointers to fixed-sized byte buffers.
+Each buffer (or page, if you will) is only allocated once there it has data that
+needs to be written into it.</p>
+<a class="header" href="#example" id="example"><h2>Example</h2></a>
+<a class="header" href="#writing" id="writing"><h3>Writing</h3></a>
+<p>Say we have a memory pager with pages that are 4 kilobytes long each. The
+initial state would be:</p>
+<pre><code class="language-txt">[]
 </code></pre>
-<a class="header" href="#headers" id="headers"><h2>Headers</h2></a>
-<p>All the files in Dat's Storage are considered SLEEP files. However, not all
-files require a header. Only the files that have a variable algorithm (such as
-hashing, signing) require a SLEEP header.</p>
-<a class="header" href="#usage-in-dat" id="usage-in-dat"><h2>Usage in Dat</h2></a>
-<p>When you append data, you basically update the Merkle Tree. Updating the Merkle
-Tree creates a new Root Hash of the Merkle Tree. For security we need to sign
-this Root Hash, so people can trust it's the new one.</p>
-<p>It's important to know that everything in Hypercore is a byproduct of appending
-data to the Feed. This includes Signatures, Hashes, Root Nodes and more.</p>
-<a class="header" href="#types-of-storage" id="types-of-storage"><h3>Types of Storage</h3></a>
+<p>All we have is an empty list with no values.</p>
+<blockquote>
+<p>4 kilobytes is a reasonable default for pages, as it maps directly to most
+operating system's page internal paging structures. This means that this can
+generally efficiently be allocated &amp; cleared.</p>
+</blockquote>
+<p>Let's say we want to write the 2000th byte. We need to figure out which page
+this will be on. We can do this by dividing the index by the page size, and the
+resulting number (integer) is the page we want to index. E.g. <code>2000 / 1024</code> =
+<code>1</code>.</p>
+<blockquote>
+<p>In languages that don't support integer division, the equivalent of
+<code>Math.floor()</code> should be called on the resulting value.</p>
+</blockquote>
+<p>Now that we have the right page number, we need to find the right index on the
+page. We can do this by using the modulo operator. E.g. <code>2000 % (1024 - 1)</code>
+results in index <code>997</code>. We subtract 1 from the page size because the first entry
+is located a position 0, not position 1.</p>
+<p>Putting this together, we need to write the 997th byte on the second page (index
+1). This would look as:</p>
+<pre><code class="language-txt">[
+  None,
+  Some(Vec), // 1024 bytes
+]
+</code></pre>
+<p>The first page isn't allocated so we put a <code>None</code> (or <code>null</code>) value there. The
+second page (index 1) <em>is</em> allocated, so we keep a pointer into the buffer. All
+gaps in between bytes are kept as None types.</p>
+<a class="header" href="#reading" id="reading"><h2>Reading</h2></a>
+<p>Reading values from the pager can be split up into two operations:</p>
 <ul>
-<li><strong>data:</strong> The concatenated data that was appended to the feed.</li>
-<li><strong>merkle tree:</strong> The hashes of the data, and hashes of hashes of data - stored
-in a tree. Also stores the length of the data.</li>
-<li><strong>signatures:</strong> We take the Root Hash of the Merkle Tree, and sign that one.</li>
-<li><strong>bitfield:</strong> Space-efficient data structure used to figure out which data you
-have and what data you don't.</li>
-<li><strong>key:</strong> Ed25519 Public Key (part of a keypair).</li>
-<li><strong>secret key:</strong> Ed25519 Secret Key (part of a keypair).</li>
+<li>reading a value from an empty page</li>
+<li>reading a value from an existent page</li>
 </ul>
-<p>When you produce a new Signature, the index for the Signature is the same index
-as for the data you appended to the Feed.</p>
-<a class="header" href="#random-access-storage" id="random-access-storage"><h2>Random Access Storage</h2></a>
-<p>Hypercore supports multiple persistence backends through the
-<code>random-access-storage</code> interface. Each storage backend adheres to a
-standardized interface to write, read and delete ranges of bytes.</p>
-<p>There are many different backends available, but generally all implementations
-implement the following backends:</p>
+<p>It's generally recommended that any value read from the memory pager can be an
+empty variant (<code>None</code> or <code>null</code>), as it might not have been written yet. This is
+similar to accessing values in most vector implementations.</p>
+<p>When a value is read from an empty page, if the page is empty the resulting
+value will be empty too.</p>
+<p>If the page exists, the index into the buffer must be calculated (see the
+Writing section), and that value can be returned.</p>
+<a class="header" href="#implementation" id="implementation"><h2>Implementation</h2></a>
+<p>We can get the page by dividing the index by the page size:</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+let page_num = index / (page_size - 1);
+let page = get_page(page_num); // get the page from our list.
+#}</code></pre></pre>
+<p>To get the adjusted index into the page, we need to translate the page index:</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+let page_index = index % (page_size - 1);
+#}</code></pre></pre>
+<p>Putting these together:</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+fn set(index: usize, value: T) {
+  let page_num = index / (self.page_size - 1);
+  let page = match self.pages.get(page_num) {
+    Some(page) =&gt; page,
+    None =&gt; /* allocate a new page and return it */,
+  }
+  let page_index = index % (page_size - 1);
+  page[page_index] = value;
+}
+#}</code></pre></pre>
+<a class="header" href="#references" id="references"><h2>References</h2></a>
 <ul>
-<li><code>random-access-memory</code>: stores bytes in-memory. Ideal for testing, and
-providing an initial implementation.</li>
-<li><code>random-access-disk</code>: stores bytes on disk. Generally useful as Hypercore's
-first persistent backend.</li>
+<li><a href="https://github.com/mafintosh/memory-pager">mafintosh/memory-pager</a></li>
+<li><a href="https://github.com/datrs/memory-pager">datrs/memory-pager</a></li>
 </ul>
-<p>Because Hypercore and Dat support partially downloading data, a useful feature
-is to implement <em>sparse persistence</em>. This means that we can write data into
-memory or to disk with spaces in between, but without paying any cost.</p>
-<p>For example if we want to write bytes 0 to 10, and bytes 9877 to 11000, the
-space between 10 and 9877 should not cost us anything.</p>
-<p>This is generally implemented using <em>pagers</em>. A pager is a vector (or array)
-where each entry is a range. If we want to access a particular range, we lookup
-the correct entry in the pager, and allocate it if needed. This way we preserve
-space we don't use.</p>
-<p>It's generally good to use 1kb pages when accessing memory, and 4kb pages when
-accessing disk (SSD). This ensures that data will be written as continuous
-chunks, which is good for performance.</p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
                         
-                            <a rel="prev" href="ch01-03-bitfield.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="ch02-02-merkle-tree-stream.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
                         
 
                         
-                            <a rel="next" href="ch02-00-implementation-guide.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next" href="ch03-00-appendix.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
                         
@@ -214,13 +248,13 @@ chunks, which is good for performance.</p>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
                 
-                    <a href="ch01-03-bitfield.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a href="ch02-02-merkle-tree-stream.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
                 
 
                 
-                    <a href="ch02-00-implementation-guide.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a href="ch03-00-appendix.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
                 
