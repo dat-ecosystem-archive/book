@@ -13,6 +13,7 @@
 - [Implementation Guide](./ch02-00-implementation-guide.md)
   - [Flat Tree](./ch02-01-flat-tree.md)
   - [Merkle Tree Stream](./ch02-02-merkle-tree-stream.md)
+  - [Memory Pager](./ch02-03-memory-pager.md)
 
 ## Appendix
 - [Appendix](./ch03-00-appendix.md)
