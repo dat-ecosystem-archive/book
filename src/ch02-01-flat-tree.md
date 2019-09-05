@@ -36,7 +36,7 @@ pub fn full_roots(i: usize) -> Vec<usize>{
 ```
 
 ### index
-Return the index for a node at at given depth and offset.
+Return the index for a node at a given depth and offset.
 ```rust
 pub fn index(depth: usize, offset: usize) -> usize
 ```
