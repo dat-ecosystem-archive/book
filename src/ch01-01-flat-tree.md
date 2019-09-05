@@ -47,7 +47,7 @@ The way this would be expressed in-memory would be as the list (vector):
 
 ## Depth
 
-Indexes 0, 2, 4, 6 have a depth of 0. And indexes 1, 5, 9 have a depth of 1.
+Indexes 0, 2, 4, 6 have a depth of 0. And indexes 1 and 5 have a depth of 1.
 
 ```text
 depth = 2  ^        3

@@ -36,7 +36,7 @@ pub fn full_roots(i: usize) -> Vec<usize>{
 ```
 
 ### index
-Return the index for a node at at given depth and offset.
+Return the index for a node at a given depth and offset.
 ```rust
 pub fn index(depth: usize, offset: usize) -> usize
 ```
@@ -137,7 +137,7 @@ child node, so it can't have child nodes.
 
 ### Spans
 Similarly for spans. If an even number is targeted, it is at the bottom of the
-tree, so it will only span itself. Therefor it's easy to implement an `is_even`
+tree, so it will only span itself. Therefore it's easy to implement an `is_even`
 check, and return the index that was passed in if it's true.
 
 ## Full Roots
