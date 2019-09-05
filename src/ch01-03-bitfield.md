@@ -68,7 +68,7 @@ Bitfield - it just means it's completely empty.
 Looking at a byte and looking at a bit is the same cost in a computer. You want
 to optimize for getting the most information possible when looking at a byte.
 
-Therefore in order get the most performance out of our structure, we want to
+Therefore in order to get the most performance out of our structure, we want to
 construct our tree using bytes instead of pairs of bits.
 
 Consider the following scheme. Given two bytes: `A` `B`. Take each of them, and
