@@ -4,6 +4,8 @@
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
         <title>Bitfield - </title>
+        
+
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -32,7 +34,10 @@
     </head>
     <body class="light">
         <!-- Provide site root to javascript -->
-        <script type="text/javascript">var path_to_root = "";</script>
+        <script type="text/javascript">
+            var path_to_root = "";
+            var default_theme = "light";
+        </script>
 
         <!-- Work around some values being stored in localStorage wrapped in quotes -->
         <script type="text/javascript">
@@ -53,8 +58,8 @@
         <!-- Set the theme before any content is loaded, prevents flash -->
         <script type="text/javascript">
             var theme;
-            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { } 
-            if (theme === null || theme === undefined) { theme = 'light'; }
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
             document.body.className = theme;
             document.querySelector('html').className = theme + ' js';
         </script>
@@ -72,7 +77,10 @@
         </script>
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
-            <ol class="chapter"><li><a href="ch00-00-introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li><a href="ch01-00-key-concepts.html"><strong aria-hidden="true">2.</strong> Key Concepts</a></li><li><ol class="section"><li><a href="ch01-01-flat-tree.html"><strong aria-hidden="true">2.1.</strong> Flat Tree</a></li><li><a href="ch01-02-merkle-tree.html"><strong aria-hidden="true">2.2.</strong> Merkle Tree</a></li><li><a href="ch01-03-bitfield.html" class="active"><strong aria-hidden="true">2.3.</strong> Bitfield</a></li><li><a href="ch01-04-storage.html"><strong aria-hidden="true">2.4.</strong> Storage</a></li></ol></li><li><a href="ch02-00-implementation-guide.html"><strong aria-hidden="true">3.</strong> Implementation Guide</a></li><li><ol class="section"><li><a href="ch02-01-flat-tree.html"><strong aria-hidden="true">3.1.</strong> Flat Tree</a></li><li><a href="ch02-02-merkle-tree-stream.html"><strong aria-hidden="true">3.2.</strong> Merkle Tree Stream</a></li><li><a href="ch02-03-memory-pager.html"><strong aria-hidden="true">3.3.</strong> Memory Pager</a></li></ol></li><li><a href="ch03-00-appendix.html"><strong aria-hidden="true">4.</strong> Appendix</a></li><li><ol class="section"><li><a href="ch03-01-terminology.html"><strong aria-hidden="true">4.1.</strong> A - Terminology</a></li></ol></li></ol>
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li><a href="ch00-00-introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li><a href="ch01-00-key-concepts.html"><strong aria-hidden="true">2.</strong> Key Concepts</a></li><li><ol class="section"><li><a href="ch01-01-flat-tree.html"><strong aria-hidden="true">2.1.</strong> Flat Tree</a></li><li><a href="ch01-02-merkle-tree.html"><strong aria-hidden="true">2.2.</strong> Merkle Tree</a></li><li><a href="ch01-03-bitfield.html" class="active"><strong aria-hidden="true">2.3.</strong> Bitfield</a></li><li><a href="ch01-04-storage.html"><strong aria-hidden="true">2.4.</strong> Storage</a></li></ol></li><li><a href="ch02-00-implementation-guide.html"><strong aria-hidden="true">3.</strong> Implementation Guide</a></li><li><ol class="section"><li><a href="ch02-01-flat-tree.html"><strong aria-hidden="true">3.1.</strong> Flat Tree</a></li><li><a href="ch02-02-merkle-tree-stream.html"><strong aria-hidden="true">3.2.</strong> Merkle Tree Stream</a></li><li><a href="ch02-03-memory-pager.html"><strong aria-hidden="true">3.3.</strong> Memory Pager</a></li></ol></li><li><a href="ch03-00-appendix.html"><strong aria-hidden="true">4.</strong> Appendix</a></li><li><ol class="section"><li><a href="ch03-01-terminology.html"><strong aria-hidden="true">4.1.</strong> A - Terminology</a></li></ol></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
 
         <div id="page-wrapper" class="page-wrapper">
@@ -89,7 +97,7 @@
                                 <i class="fa fa-paint-brush"></i>
                             </button>
                             <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
-                                <li role="none"><button role="menuitem" class="theme" id="light">Light <span class="default">(default)</span></button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
                                 <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
                                 <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
                                 <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
@@ -102,12 +110,13 @@
                             
                         </div>
 
-                        <h1 class="menu-title"></h1> 
+                        <h1 class="menu-title"></h1>
 
                         <div class="right-buttons">
                             <a href="print.html" title="Print this book" aria-label="Print this book">
                                 <i id="print-button" class="fa fa-print"></i>
                             </a>
+                            
                         </div>
                     </div>
                 </div>
@@ -136,14 +145,14 @@
 
                 <div id="content" class="content">
                     <main>
-                        <a class="header" href="#bitfield" id="bitfield"><h1>Bitfield</h1></a>
-<a class="header" href="#what-is-a-bitfield" id="what-is-a-bitfield"><h2>What is a bitfield?</h2></a>
+                        <h1><a class="header" href="#bitfield" id="bitfield">Bitfield</a></h1>
+<h2><a class="header" href="#what-is-a-bitfield" id="what-is-a-bitfield">What is a bitfield?</a></h2>
 <p>Space-efficient data structure used to figure out which data you have and what
 data you don't. Meant to always be kept in memory because it's small enough.</p>
 <p>At its core, bitfields are a way of efficiently describing sets of numbers. You
 can think of them as a series of bits. When a number at a position is 1, it
 means that position is in the set. If a number is 0, that position isn't.</p>
-<a class="header" href="#example" id="example"><h3>Example</h3></a>
+<h3><a class="header" href="#example" id="example">Example</a></h3>
 <pre><code class="language-txt">bits:  00101
 index: 01234
 </code></pre>
@@ -152,7 +161,7 @@ the way it's enumerated.</p>
 <p>In Dat we use bitfields to describe which pieces of data we have, and which
 pieces of data we don't. Also it's used internally to index data structures,
 such as the Merkle Tree.</p>
-<a class="header" href="#indexed-bitfields" id="indexed-bitfields"><h2>Indexed Bitfields</h2></a>
+<h2><a class="header" href="#indexed-bitfields" id="indexed-bitfields">Indexed Bitfields</a></h2>
 <p>The most common operations in Dat for bitfields is to either find a piece of
 data that's missing, or checking if we have a piece of data.</p>
 <p>Checking if we have a piece of data is straightforward, as all we have to do is
@@ -160,7 +169,7 @@ look in the bitfield in the position of the data and see if it's a <code>1</code
 <p>Finding a piece of data we're missing is a bit more tricky. Basically it'll
 require a linear scan of the whole bitfield. In order to speed this up, we use
 an Indexed Bitfield.</p>
-<a class="header" href="#structure" id="structure"><h3>Structure</h3></a>
+<h3><a class="header" href="#structure" id="structure">Structure</a></h3>
 <p>At a high level Indexed Bitfields are a binary tree structure where each node is
 made up out of 2 bits.</p>
 <ul>
@@ -186,10 +195,10 @@ of the tree. This means we only need to check the children of the left node to
 find out exactly which nodes we have.</p>
 <p>A fun fact here is also: a completely zeroed-out buffer is a valid Indexed
 Bitfield - it just means it's completely empty.</p>
-<a class="header" href="#optimizing-the-structure" id="optimizing-the-structure"><h3>Optimizing the Structure</h3></a>
+<h3><a class="header" href="#optimizing-the-structure" id="optimizing-the-structure">Optimizing the Structure</a></h3>
 <p>Looking at a byte and looking at a bit is the same cost in a computer. You want
 to optimize for getting the most information possible when looking at a byte.</p>
-<p>Therefore in order get the most performance out of our structure, we want to
+<p>Therefore in order to get the most performance out of our structure, we want to
 construct our tree using bytes instead of pairs of bits.</p>
 <p>Consider the following scheme. Given two bytes: <code>A</code> <code>B</code>. Take each of them, and
 split each of them into pairs of two bits. We'll use <code>a1 a2 a3 a4</code> to indicate
@@ -203,12 +212,12 @@ Scheme to each pair of bits.</p>
 Tree Index Scheme.</p>
 <p>In the future we might make this even more efficient using <code>SIMD</code> instructions,
 which can operate on more bits at the same time.</p>
-<a class="header" href="#lookup-tables" id="lookup-tables"><h2>Lookup Tables</h2></a>
+<h2><a class="header" href="#lookup-tables" id="lookup-tables">Lookup Tables</a></h2>
 <p>An efficient implementation of the previous scheme can be done using lookup
 tables for values between between 0 and 256.</p>
 <p>This is all solely for performance and completely optional. The important part
 is that the indexing scheme is followed.</p>
-<a class="header" href="#types-of-bitfields" id="types-of-bitfields"><h2>Types of Bitfields</h2></a>
+<h2><a class="header" href="#types-of-bitfields" id="types-of-bitfields">Types of Bitfields</a></h2>
 <p>We have 3 bitfields:</p>
 <ul>
 <li><strong>Data Bitfield:</strong> Indicates which data you have, and which data you don't.</li>
@@ -219,7 +228,7 @@ and which nodes you don't.</li>
 </ul>
 <p>This means that whenever you update the Data Bitfield, you must also update
 the Indexed Bitfield.</p>
-<a class="header" href="#updating-a-byte" id="updating-a-byte"><h3>Updating a Byte</h3></a>
+<h3><a class="header" href="#updating-a-byte" id="updating-a-byte">Updating a Byte</a></h3>
 <p>If we want to set an index in a bitfield to <code>false</code>, it would mean we needed to
 flip a bit to <code>0</code>. Because we can only operate on bytes, the easiest way to
 achieve this is to apply a bitmask.</p>
@@ -242,7 +251,7 @@ let data_update = vec![
 which bit is set to zero. When you want to flip a bit to zero, you take the
 index of the bit you want to flip, look up the entry in the table, and bitwise
 AND the two numbers.</p>
-<a class="header" href="#serialization" id="serialization"><h2>Serialization</h2></a>
+<h2><a class="header" href="#serialization" id="serialization">Serialization</a></h2>
 <p>For every piece of data there's going to be 1 bit in the Data Bitfield. And
 2 bits in the Merkle Tree Bitfield because there's a parent node and a leaf
 node. There are going to be as many parents as there will be leaves.</p>
@@ -255,7 +264,7 @@ Index Scheme, totalling 4 bits in the Indexed Bitfield.</p>
 <li><strong>Merkle Tree:</strong> 2048 bytes.</li>
 <li><strong>Indexed Tree:</strong> 256 bytes.</li>
 </ul>
-<a class="header" href="#run-length-encoding" id="run-length-encoding"><h2>Run Length Encoding</h2></a>
+<h2><a class="header" href="#run-length-encoding" id="run-length-encoding">Run Length Encoding</a></h2>
 <p>When sending data over the wire, we want to compress the bitfields further. An
 efficient way of doing this is by using Run Length Encoding (RLE).
 TODO: explain the module. For now read the README.</p>

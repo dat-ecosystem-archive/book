@@ -4,6 +4,8 @@
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
         <title>Storage - </title>
+        
+
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -32,7 +34,10 @@
     </head>
     <body class="light">
         <!-- Provide site root to javascript -->
-        <script type="text/javascript">var path_to_root = "";</script>
+        <script type="text/javascript">
+            var path_to_root = "";
+            var default_theme = "light";
+        </script>
 
         <!-- Work around some values being stored in localStorage wrapped in quotes -->
         <script type="text/javascript">
@@ -53,8 +58,8 @@
         <!-- Set the theme before any content is loaded, prevents flash -->
         <script type="text/javascript">
             var theme;
-            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { } 
-            if (theme === null || theme === undefined) { theme = 'light'; }
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
             document.body.className = theme;
             document.querySelector('html').className = theme + ' js';
         </script>
@@ -72,7 +77,10 @@
         </script>
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
-            <ol class="chapter"><li><a href="ch00-00-introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li><a href="ch01-00-key-concepts.html"><strong aria-hidden="true">2.</strong> Key Concepts</a></li><li><ol class="section"><li><a href="ch01-01-flat-tree.html"><strong aria-hidden="true">2.1.</strong> Flat Tree</a></li><li><a href="ch01-02-merkle-tree.html"><strong aria-hidden="true">2.2.</strong> Merkle Tree</a></li><li><a href="ch01-03-bitfield.html"><strong aria-hidden="true">2.3.</strong> Bitfield</a></li><li><a href="ch01-04-storage.html" class="active"><strong aria-hidden="true">2.4.</strong> Storage</a></li></ol></li><li><a href="ch02-00-implementation-guide.html"><strong aria-hidden="true">3.</strong> Implementation Guide</a></li><li><ol class="section"><li><a href="ch02-01-flat-tree.html"><strong aria-hidden="true">3.1.</strong> Flat Tree</a></li><li><a href="ch02-02-merkle-tree-stream.html"><strong aria-hidden="true">3.2.</strong> Merkle Tree Stream</a></li><li><a href="ch02-03-memory-pager.html"><strong aria-hidden="true">3.3.</strong> Memory Pager</a></li></ol></li><li><a href="ch03-00-appendix.html"><strong aria-hidden="true">4.</strong> Appendix</a></li><li><ol class="section"><li><a href="ch03-01-terminology.html"><strong aria-hidden="true">4.1.</strong> A - Terminology</a></li></ol></li></ol>
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li><a href="ch00-00-introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li><a href="ch01-00-key-concepts.html"><strong aria-hidden="true">2.</strong> Key Concepts</a></li><li><ol class="section"><li><a href="ch01-01-flat-tree.html"><strong aria-hidden="true">2.1.</strong> Flat Tree</a></li><li><a href="ch01-02-merkle-tree.html"><strong aria-hidden="true">2.2.</strong> Merkle Tree</a></li><li><a href="ch01-03-bitfield.html"><strong aria-hidden="true">2.3.</strong> Bitfield</a></li><li><a href="ch01-04-storage.html" class="active"><strong aria-hidden="true">2.4.</strong> Storage</a></li></ol></li><li><a href="ch02-00-implementation-guide.html"><strong aria-hidden="true">3.</strong> Implementation Guide</a></li><li><ol class="section"><li><a href="ch02-01-flat-tree.html"><strong aria-hidden="true">3.1.</strong> Flat Tree</a></li><li><a href="ch02-02-merkle-tree-stream.html"><strong aria-hidden="true">3.2.</strong> Merkle Tree Stream</a></li><li><a href="ch02-03-memory-pager.html"><strong aria-hidden="true">3.3.</strong> Memory Pager</a></li></ol></li><li><a href="ch03-00-appendix.html"><strong aria-hidden="true">4.</strong> Appendix</a></li><li><ol class="section"><li><a href="ch03-01-terminology.html"><strong aria-hidden="true">4.1.</strong> A - Terminology</a></li></ol></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
 
         <div id="page-wrapper" class="page-wrapper">
@@ -89,7 +97,7 @@
                                 <i class="fa fa-paint-brush"></i>
                             </button>
                             <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
-                                <li role="none"><button role="menuitem" class="theme" id="light">Light <span class="default">(default)</span></button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
                                 <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
                                 <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
                                 <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
@@ -102,12 +110,13 @@
                             
                         </div>
 
-                        <h1 class="menu-title"></h1> 
+                        <h1 class="menu-title"></h1>
 
                         <div class="right-buttons">
                             <a href="print.html" title="Print this book" aria-label="Print this book">
                                 <i id="print-button" class="fa fa-print"></i>
                             </a>
+                            
                         </div>
                     </div>
                 </div>
@@ -136,24 +145,24 @@
 
                 <div id="content" class="content">
                     <main>
-                        <a class="header" href="#storage" id="storage"><h1>Storage</h1></a>
+                        <h1><a class="header" href="#storage" id="storage">Storage</a></h1>
 <p>You can represent a binary tree in a simple flat list using the following
 structure:</p>
 <pre><code class="language-txt">      3
   1       5
 0   2   4   6  ...
 </code></pre>
-<a class="header" href="#headers" id="headers"><h2>Headers</h2></a>
+<h2><a class="header" href="#headers" id="headers">Headers</a></h2>
 <p>All the files in Dat's Storage are considered SLEEP files. However, not all
 files require a header. Only the files that have a variable algorithm (such as
 hashing, signing) require a SLEEP header.</p>
-<a class="header" href="#usage-in-dat" id="usage-in-dat"><h2>Usage in Dat</h2></a>
+<h2><a class="header" href="#usage-in-dat" id="usage-in-dat">Usage in Dat</a></h2>
 <p>When you append data, you basically update the Merkle Tree. Updating the Merkle
 Tree creates a new Root Hash of the Merkle Tree. For security we need to sign
 this Root Hash, so people can trust it's the new one.</p>
 <p>It's important to know that everything in Hypercore is a byproduct of appending
 data to the Feed. This includes Signatures, Hashes, Root Nodes and more.</p>
-<a class="header" href="#types-of-storage" id="types-of-storage"><h3>Types of Storage</h3></a>
+<h3><a class="header" href="#types-of-storage" id="types-of-storage">Types of Storage</a></h3>
 <ul>
 <li><strong>data:</strong> The concatenated data that was appended to the feed.</li>
 <li><strong>merkle tree:</strong> The hashes of the data, and hashes of hashes of data - stored
@@ -166,7 +175,7 @@ have and what data you don't.</li>
 </ul>
 <p>When you produce a new Signature, the index for the Signature is the same index
 as for the data you appended to the Feed.</p>
-<a class="header" href="#random-access-storage" id="random-access-storage"><h2>Random Access Storage</h2></a>
+<h2><a class="header" href="#random-access-storage" id="random-access-storage">Random Access Storage</a></h2>
 <p>Hypercore supports multiple persistence backends through the
 <code>random-access-storage</code> interface. Each storage backend adheres to a
 standardized interface to write, read and delete ranges of bytes.</p>

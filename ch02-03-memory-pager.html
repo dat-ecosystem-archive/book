@@ -4,6 +4,8 @@
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
         <title>Memory Pager - </title>
+        
+
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -32,7 +34,10 @@
     </head>
     <body class="light">
         <!-- Provide site root to javascript -->
-        <script type="text/javascript">var path_to_root = "";</script>
+        <script type="text/javascript">
+            var path_to_root = "";
+            var default_theme = "light";
+        </script>
 
         <!-- Work around some values being stored in localStorage wrapped in quotes -->
         <script type="text/javascript">
@@ -53,8 +58,8 @@
         <!-- Set the theme before any content is loaded, prevents flash -->
         <script type="text/javascript">
             var theme;
-            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { } 
-            if (theme === null || theme === undefined) { theme = 'light'; }
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
             document.body.className = theme;
             document.querySelector('html').className = theme + ' js';
         </script>
@@ -72,7 +77,10 @@
         </script>
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
-            <ol class="chapter"><li><a href="ch00-00-introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li><a href="ch01-00-key-concepts.html"><strong aria-hidden="true">2.</strong> Key Concepts</a></li><li><ol class="section"><li><a href="ch01-01-flat-tree.html"><strong aria-hidden="true">2.1.</strong> Flat Tree</a></li><li><a href="ch01-02-merkle-tree.html"><strong aria-hidden="true">2.2.</strong> Merkle Tree</a></li><li><a href="ch01-03-bitfield.html"><strong aria-hidden="true">2.3.</strong> Bitfield</a></li><li><a href="ch01-04-storage.html"><strong aria-hidden="true">2.4.</strong> Storage</a></li></ol></li><li><a href="ch02-00-implementation-guide.html"><strong aria-hidden="true">3.</strong> Implementation Guide</a></li><li><ol class="section"><li><a href="ch02-01-flat-tree.html"><strong aria-hidden="true">3.1.</strong> Flat Tree</a></li><li><a href="ch02-02-merkle-tree-stream.html"><strong aria-hidden="true">3.2.</strong> Merkle Tree Stream</a></li><li><a href="ch02-03-memory-pager.html" class="active"><strong aria-hidden="true">3.3.</strong> Memory Pager</a></li></ol></li><li><a href="ch03-00-appendix.html"><strong aria-hidden="true">4.</strong> Appendix</a></li><li><ol class="section"><li><a href="ch03-01-terminology.html"><strong aria-hidden="true">4.1.</strong> A - Terminology</a></li></ol></li></ol>
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li><a href="ch00-00-introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li><a href="ch01-00-key-concepts.html"><strong aria-hidden="true">2.</strong> Key Concepts</a></li><li><ol class="section"><li><a href="ch01-01-flat-tree.html"><strong aria-hidden="true">2.1.</strong> Flat Tree</a></li><li><a href="ch01-02-merkle-tree.html"><strong aria-hidden="true">2.2.</strong> Merkle Tree</a></li><li><a href="ch01-03-bitfield.html"><strong aria-hidden="true">2.3.</strong> Bitfield</a></li><li><a href="ch01-04-storage.html"><strong aria-hidden="true">2.4.</strong> Storage</a></li></ol></li><li><a href="ch02-00-implementation-guide.html"><strong aria-hidden="true">3.</strong> Implementation Guide</a></li><li><ol class="section"><li><a href="ch02-01-flat-tree.html"><strong aria-hidden="true">3.1.</strong> Flat Tree</a></li><li><a href="ch02-02-merkle-tree-stream.html"><strong aria-hidden="true">3.2.</strong> Merkle Tree Stream</a></li><li><a href="ch02-03-memory-pager.html" class="active"><strong aria-hidden="true">3.3.</strong> Memory Pager</a></li></ol></li><li><a href="ch03-00-appendix.html"><strong aria-hidden="true">4.</strong> Appendix</a></li><li><ol class="section"><li><a href="ch03-01-terminology.html"><strong aria-hidden="true">4.1.</strong> A - Terminology</a></li></ol></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
 
         <div id="page-wrapper" class="page-wrapper">
@@ -89,7 +97,7 @@
                                 <i class="fa fa-paint-brush"></i>
                             </button>
                             <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
-                                <li role="none"><button role="menuitem" class="theme" id="light">Light <span class="default">(default)</span></button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
                                 <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
                                 <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
                                 <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
@@ -102,12 +110,13 @@
                             
                         </div>
 
-                        <h1 class="menu-title"></h1> 
+                        <h1 class="menu-title"></h1>
 
                         <div class="right-buttons">
                             <a href="print.html" title="Print this book" aria-label="Print this book">
                                 <i id="print-button" class="fa fa-print"></i>
                             </a>
+                            
                         </div>
                     </div>
                 </div>
@@ -136,7 +145,7 @@
 
                 <div id="content" class="content">
                     <main>
-                        <a class="header" href="#memory-pager" id="memory-pager"><h1>memory-pager</h1></a>
+                        <h1><a class="header" href="#memory-pager" id="memory-pager">memory-pager</a></h1>
 <p>Data in Hypercore streams can be replicated out of order. This means that you
 could both have the first message in a feed, and the millionth message in a
 feed. To ensure that we don't allocate space for a million messages when we only
@@ -144,8 +153,8 @@ have two we make use of a data structure called a <em>memory pager</em>.</p>
 <p>Memory pagers work by having a vector of pointers to fixed-sized byte buffers.
 Each buffer (or page, if you will) is only allocated once there it has data that
 needs to be written into it.</p>
-<a class="header" href="#example" id="example"><h2>Example</h2></a>
-<a class="header" href="#writing" id="writing"><h3>Writing</h3></a>
+<h2><a class="header" href="#example" id="example">Example</a></h2>
+<h3><a class="header" href="#writing" id="writing">Writing</a></h3>
 <p>Say we have a memory pager with pages that are 4 kilobytes long each. The
 initial state would be:</p>
 <pre><code class="language-txt">[]
@@ -178,7 +187,7 @@ is located a position 0, not position 1.</p>
 <p>The first page isn't allocated so we put a <code>None</code> (or <code>null</code>) value there. The
 second page (index 1) <em>is</em> allocated, so we keep a pointer into the buffer. All
 gaps in between bytes are kept as None types.</p>
-<a class="header" href="#reading" id="reading"><h2>Reading</h2></a>
+<h2><a class="header" href="#reading" id="reading">Reading</a></h2>
 <p>Reading values from the pager can be split up into two operations:</p>
 <ul>
 <li>reading a value from an empty page</li>
@@ -191,7 +200,7 @@ similar to accessing values in most vector implementations.</p>
 value will be empty too.</p>
 <p>If the page exists, the index into the buffer must be calculated (see the
 Writing section), and that value can be returned.</p>
-<a class="header" href="#implementation" id="implementation"><h2>Implementation</h2></a>
+<h2><a class="header" href="#implementation" id="implementation">Implementation</a></h2>
 <p>We can get the page by dividing the index by the page size:</p>
 <pre><pre class="playpen"><code class="language-rust">
 # #![allow(unused_variables)]
@@ -219,7 +228,7 @@ fn set(index: usize, value: T) {
   page[page_index] = value;
 }
 #}</code></pre></pre>
-<a class="header" href="#references" id="references"><h2>References</h2></a>
+<h2><a class="header" href="#references" id="references">References</a></h2>
 <ul>
 <li><a href="https://github.com/mafintosh/memory-pager">mafintosh/memory-pager</a></li>
 <li><a href="https://github.com/datrs/memory-pager">datrs/memory-pager</a></li>

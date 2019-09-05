@@ -4,6 +4,8 @@
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
         <title>Merkle Tree - </title>
+        
+
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -32,7 +34,10 @@
     </head>
     <body class="light">
         <!-- Provide site root to javascript -->
-        <script type="text/javascript">var path_to_root = "";</script>
+        <script type="text/javascript">
+            var path_to_root = "";
+            var default_theme = "light";
+        </script>
 
         <!-- Work around some values being stored in localStorage wrapped in quotes -->
         <script type="text/javascript">
@@ -53,8 +58,8 @@
         <!-- Set the theme before any content is loaded, prevents flash -->
         <script type="text/javascript">
             var theme;
-            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { } 
-            if (theme === null || theme === undefined) { theme = 'light'; }
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
             document.body.className = theme;
             document.querySelector('html').className = theme + ' js';
         </script>
@@ -72,7 +77,10 @@
         </script>
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
-            <ol class="chapter"><li><a href="ch00-00-introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li><a href="ch01-00-key-concepts.html"><strong aria-hidden="true">2.</strong> Key Concepts</a></li><li><ol class="section"><li><a href="ch01-01-flat-tree.html"><strong aria-hidden="true">2.1.</strong> Flat Tree</a></li><li><a href="ch01-02-merkle-tree.html" class="active"><strong aria-hidden="true">2.2.</strong> Merkle Tree</a></li><li><a href="ch01-03-bitfield.html"><strong aria-hidden="true">2.3.</strong> Bitfield</a></li><li><a href="ch01-04-storage.html"><strong aria-hidden="true">2.4.</strong> Storage</a></li></ol></li><li><a href="ch02-00-implementation-guide.html"><strong aria-hidden="true">3.</strong> Implementation Guide</a></li><li><ol class="section"><li><a href="ch02-01-flat-tree.html"><strong aria-hidden="true">3.1.</strong> Flat Tree</a></li><li><a href="ch02-02-merkle-tree-stream.html"><strong aria-hidden="true">3.2.</strong> Merkle Tree Stream</a></li><li><a href="ch02-03-memory-pager.html"><strong aria-hidden="true">3.3.</strong> Memory Pager</a></li></ol></li><li><a href="ch03-00-appendix.html"><strong aria-hidden="true">4.</strong> Appendix</a></li><li><ol class="section"><li><a href="ch03-01-terminology.html"><strong aria-hidden="true">4.1.</strong> A - Terminology</a></li></ol></li></ol>
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li><a href="ch00-00-introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li><a href="ch01-00-key-concepts.html"><strong aria-hidden="true">2.</strong> Key Concepts</a></li><li><ol class="section"><li><a href="ch01-01-flat-tree.html"><strong aria-hidden="true">2.1.</strong> Flat Tree</a></li><li><a href="ch01-02-merkle-tree.html" class="active"><strong aria-hidden="true">2.2.</strong> Merkle Tree</a></li><li><a href="ch01-03-bitfield.html"><strong aria-hidden="true">2.3.</strong> Bitfield</a></li><li><a href="ch01-04-storage.html"><strong aria-hidden="true">2.4.</strong> Storage</a></li></ol></li><li><a href="ch02-00-implementation-guide.html"><strong aria-hidden="true">3.</strong> Implementation Guide</a></li><li><ol class="section"><li><a href="ch02-01-flat-tree.html"><strong aria-hidden="true">3.1.</strong> Flat Tree</a></li><li><a href="ch02-02-merkle-tree-stream.html"><strong aria-hidden="true">3.2.</strong> Merkle Tree Stream</a></li><li><a href="ch02-03-memory-pager.html"><strong aria-hidden="true">3.3.</strong> Memory Pager</a></li></ol></li><li><a href="ch03-00-appendix.html"><strong aria-hidden="true">4.</strong> Appendix</a></li><li><ol class="section"><li><a href="ch03-01-terminology.html"><strong aria-hidden="true">4.1.</strong> A - Terminology</a></li></ol></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
 
         <div id="page-wrapper" class="page-wrapper">
@@ -89,7 +97,7 @@
                                 <i class="fa fa-paint-brush"></i>
                             </button>
                             <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
-                                <li role="none"><button role="menuitem" class="theme" id="light">Light <span class="default">(default)</span></button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
                                 <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
                                 <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
                                 <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
@@ -102,12 +110,13 @@
                             
                         </div>
 
-                        <h1 class="menu-title"></h1> 
+                        <h1 class="menu-title"></h1>
 
                         <div class="right-buttons">
                             <a href="print.html" title="Print this book" aria-label="Print this book">
                                 <i id="print-button" class="fa fa-print"></i>
                             </a>
+                            
                         </div>
                     </div>
                 </div>
@@ -136,12 +145,12 @@
 
                 <div id="content" class="content">
                     <main>
-                        <a class="header" href="#merkle-tree" id="merkle-tree"><h1>Merkle Tree</h1></a>
+                        <h1><a class="header" href="#merkle-tree" id="merkle-tree">Merkle Tree</a></h1>
 <p>Merkle Trees in Dat are specialized <a href="./ch01-01-flat-tree">Flat Trees</a> that
 contain the content of the archives.</p>
 <p>In this section we'll cover how Merkle Trees work, and how we use them inside
 Hypercore.</p>
-<a class="header" href="#what-are-merkle-trees" id="what-are-merkle-trees"><h2>What Are Merkle Trees?</h2></a>
+<h2><a class="header" href="#what-are-merkle-trees" id="what-are-merkle-trees">What Are Merkle Trees?</a></h2>
 <p>Wikipedia defines a Merkle Tree as:</p>
 <blockquote>
 <p>A hash tree or Merkle tree is a tree in which every leaf node is labelled with
@@ -165,7 +174,7 @@ hashes of data, and all uneven numbers (parent nodes) contain hashes.</p>
 <li>Node 5 contains the hash of hashes from nodes 4 and 6.</li>
 <li>Node 3 contains the hash of hashes from nodes 1 and 5.</li>
 </ul>
-<a class="header" href="#hypercore-files" id="hypercore-files"><h2>Hypercore Files</h2></a>
+<h2><a class="header" href="#hypercore-files" id="hypercore-files">Hypercore Files</a></h2>
 <p>A Hypercore's internal structure typically consist of these files:</p>
 <ul>
 <li><strong>data:</strong> a file containing the data added to the Hypercore.</li>
@@ -198,7 +207,7 @@ to store content directly on disk. For example in the case of (hyper)media
 files.</p>
 </blockquote>
 <p>Let's look at how these files relate to each other to create a Hypercore feed.</p>
-<a class="header" href="#merkle-trees-in-theory" id="merkle-trees-in-theory"><h2>Merkle Trees In Theory</h2></a>
+<h2><a class="header" href="#merkle-trees-in-theory" id="merkle-trees-in-theory">Merkle Trees In Theory</a></h2>
 <p>Whenever data is added to Hypercore, a new entry is created in the data file. We
 then hash the data, and write that hash to a tree file's leaf node. If the leaf
 node has a sibling, the parent node's hash can be computed. If the new parent
@@ -210,10 +219,10 @@ the tree, concatenate them, hash them, and sign them with our private key. We
 then store the signature in our signatures file at the same index of the leaf
 node that was added.</p>
 <p>This might all sound a little abstract though, so let's look at an example.</p>
-<a class="header" href="#merkle-trees-in-practice" id="merkle-trees-in-practice"><h2>Merkle Trees In Practice</h2></a>
+<h2><a class="header" href="#merkle-trees-in-practice" id="merkle-trees-in-practice">Merkle Trees In Practice</a></h2>
 <p>We're starting off with an empty Hypercore feed. We're planning to add 4 pieces
 of data to it, one by one: <code>[A B C D]</code>.</p>
-<a class="header" href="#entry-1" id="entry-1"><h3>Entry 1</h3></a>
+<h3><a class="header" href="#entry-1" id="entry-1">Entry 1</a></h3>
 <p>Let's add our first piece of data to Hypercore. We insert the value &quot;A&quot; as our
 first entry. In order, the following actions happen:</p>
 <ol>
@@ -232,7 +241,7 @@ first entry. In order, the following actions happen:</p>
 <p><strong>signatures</strong></p>
 <pre><code class="language-txt">0: sig(#0)
 </code></pre>
-<a class="header" href="#entry-2" id="entry-2"><h3>Entry 2</h3></a>
+<h3><a class="header" href="#entry-2" id="entry-2">Entry 2</a></h3>
 <p>Let's add our second entry to hypercore. We now have more nodes, which means
 things are a little different:</p>
 <ol>
@@ -262,7 +271,7 @@ length, which means every node in the tree is the same length.</p>
 <pre><code class="language-txt">0: sig(#0)
 1: sig(#1)
 </code></pre>
-<a class="header" href="#entry-3" id="entry-3"><h3>Entry 3</h3></a>
+<h3><a class="header" href="#entry-3" id="entry-3">Entry 3</a></h3>
 <p>So far so good. We're well on our way to building a full tree-structure! Let's
 continue on our journey, and add our third entry: <code>C</code>.</p>
 <ol>
@@ -289,7 +298,7 @@ result, and sign the result.</li>
 1: sig(#1)
 2: sig(#1 + #4)
 </code></pre>
-<a class="header" href="#entry-4" id="entry-4"><h3>Entry 4</h3></a>
+<h3><a class="header" href="#entry-4" id="entry-4">Entry 4</a></h3>
 <p>Let's add the final piece of data to our feed. This will balance out a tree, and
 bring us back to only one root hash!</p>
 <ol>
@@ -319,12 +328,12 @@ bring us back to only one root hash!</p>
 2: sig(#1 + #4)
 3: sig(#3)
 </code></pre>
-<a class="header" href="#verifying-a-merkle-tree" id="verifying-a-merkle-tree"><h2>Verifying A Merkle Tree</h2></a>
+<h2><a class="header" href="#verifying-a-merkle-tree" id="verifying-a-merkle-tree">Verifying A Merkle Tree</a></h2>
 <p>TODO</p>
-<a class="header" href="#root-nodes" id="root-nodes"><h2>Root Nodes</h2></a>
+<h2><a class="header" href="#root-nodes" id="root-nodes">Root Nodes</a></h2>
 <p>If the number of leaf nodes is a multiple of 2 the flat tree will only have a
 single root. Otherwise it'll have more than one.</p>
-<a class="header" href="#storage-format" id="storage-format"><h2>Storage Format</h2></a>
+<h2><a class="header" href="#storage-format" id="storage-format">Storage Format</a></h2>
 <p>The format of the each node in the Merkle Tree on disk is a series of 40 byte
 buffers. The first 32 bytes is the hash. The next 8 bytes is the byte size of
 the spanning tree.</p>
@@ -339,7 +348,7 @@ position in the Flat Tree.</li>
 the file of <code>32 + 5 * 40</code>, and then read <code>40</code> bytes. The first 32 bytes are the
 hash. The last 8 bytes is the combined length of the data nodes <code>#4</code> and <code>#6</code> are
 referencing. The length is encoded as <code>uint64</code> Big Endian.</p>
-<a class="header" href="#references" id="references"><h2>References</h2></a>
+<h2><a class="header" href="#references" id="references">References</a></h2>
 <ul>
 <li>https://gist.github.com/jimpick/54adc72f11f38f1fe4bc1d45d3981708</li>
 <li>https://github.com/datrs/tree-index/issues/7#issuecomment-419086236</li>

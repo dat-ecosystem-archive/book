@@ -4,6 +4,8 @@
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
         <title>Merkle Tree Stream - </title>
+        
+
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -32,7 +34,10 @@
     </head>
     <body class="light">
         <!-- Provide site root to javascript -->
-        <script type="text/javascript">var path_to_root = "";</script>
+        <script type="text/javascript">
+            var path_to_root = "";
+            var default_theme = "light";
+        </script>
 
         <!-- Work around some values being stored in localStorage wrapped in quotes -->
         <script type="text/javascript">
@@ -53,8 +58,8 @@
         <!-- Set the theme before any content is loaded, prevents flash -->
         <script type="text/javascript">
             var theme;
-            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { } 
-            if (theme === null || theme === undefined) { theme = 'light'; }
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
             document.body.className = theme;
             document.querySelector('html').className = theme + ' js';
         </script>
@@ -72,7 +77,10 @@
         </script>
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
-            <ol class="chapter"><li><a href="ch00-00-introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li><a href="ch01-00-key-concepts.html"><strong aria-hidden="true">2.</strong> Key Concepts</a></li><li><ol class="section"><li><a href="ch01-01-flat-tree.html"><strong aria-hidden="true">2.1.</strong> Flat Tree</a></li><li><a href="ch01-02-merkle-tree.html"><strong aria-hidden="true">2.2.</strong> Merkle Tree</a></li><li><a href="ch01-03-bitfield.html"><strong aria-hidden="true">2.3.</strong> Bitfield</a></li><li><a href="ch01-04-storage.html"><strong aria-hidden="true">2.4.</strong> Storage</a></li></ol></li><li><a href="ch02-00-implementation-guide.html"><strong aria-hidden="true">3.</strong> Implementation Guide</a></li><li><ol class="section"><li><a href="ch02-01-flat-tree.html"><strong aria-hidden="true">3.1.</strong> Flat Tree</a></li><li><a href="ch02-02-merkle-tree-stream.html" class="active"><strong aria-hidden="true">3.2.</strong> Merkle Tree Stream</a></li><li><a href="ch02-03-memory-pager.html"><strong aria-hidden="true">3.3.</strong> Memory Pager</a></li></ol></li><li><a href="ch03-00-appendix.html"><strong aria-hidden="true">4.</strong> Appendix</a></li><li><ol class="section"><li><a href="ch03-01-terminology.html"><strong aria-hidden="true">4.1.</strong> A - Terminology</a></li></ol></li></ol>
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li><a href="ch00-00-introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li><a href="ch01-00-key-concepts.html"><strong aria-hidden="true">2.</strong> Key Concepts</a></li><li><ol class="section"><li><a href="ch01-01-flat-tree.html"><strong aria-hidden="true">2.1.</strong> Flat Tree</a></li><li><a href="ch01-02-merkle-tree.html"><strong aria-hidden="true">2.2.</strong> Merkle Tree</a></li><li><a href="ch01-03-bitfield.html"><strong aria-hidden="true">2.3.</strong> Bitfield</a></li><li><a href="ch01-04-storage.html"><strong aria-hidden="true">2.4.</strong> Storage</a></li></ol></li><li><a href="ch02-00-implementation-guide.html"><strong aria-hidden="true">3.</strong> Implementation Guide</a></li><li><ol class="section"><li><a href="ch02-01-flat-tree.html"><strong aria-hidden="true">3.1.</strong> Flat Tree</a></li><li><a href="ch02-02-merkle-tree-stream.html" class="active"><strong aria-hidden="true">3.2.</strong> Merkle Tree Stream</a></li><li><a href="ch02-03-memory-pager.html"><strong aria-hidden="true">3.3.</strong> Memory Pager</a></li></ol></li><li><a href="ch03-00-appendix.html"><strong aria-hidden="true">4.</strong> Appendix</a></li><li><ol class="section"><li><a href="ch03-01-terminology.html"><strong aria-hidden="true">4.1.</strong> A - Terminology</a></li></ol></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
 
         <div id="page-wrapper" class="page-wrapper">
@@ -89,7 +97,7 @@
                                 <i class="fa fa-paint-brush"></i>
                             </button>
                             <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
-                                <li role="none"><button role="menuitem" class="theme" id="light">Light <span class="default">(default)</span></button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
                                 <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
                                 <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
                                 <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
@@ -102,12 +110,13 @@
                             
                         </div>
 
-                        <h1 class="menu-title"></h1> 
+                        <h1 class="menu-title"></h1>
 
                         <div class="right-buttons">
                             <a href="print.html" title="Print this book" aria-label="Print this book">
                                 <i id="print-button" class="fa fa-print"></i>
                             </a>
+                            
                         </div>
                     </div>
                 </div>
@@ -136,11 +145,11 @@
 
                 <div id="content" class="content">
                     <main>
-                        <a class="header" href="#merkle-tree-stream" id="merkle-tree-stream"><h1>Merkle Tree Stream</h1></a>
+                        <h1><a class="header" href="#merkle-tree-stream" id="merkle-tree-stream">Merkle Tree Stream</a></h1>
 <p>We covered how Dat's Merkle Trees work in the <a href="/ch01-02-merkle-tree.html">Merkle Tree
 Chapter</a>. In this chapter we'll discuss how to
 implement it, and what to look out for when optimizing.</p>
-<a class="header" href="#core-abstraction" id="core-abstraction"><h2>Core Abstraction</h2></a>
+<h2><a class="header" href="#core-abstraction" id="core-abstraction">Core Abstraction</a></h2>
 <p>At its core, the merkle tree stream is a stateful algorithm. It takes data in
 (leaf nodes), hashes it, and computes as many parent hashes as it can.</p>
 <p>At its core this can be expressed as a stateful class that has a <code>.append()</code> or
@@ -152,7 +161,7 @@ implement it, and what to look out for when optimizing.</p>
 </ul>
 <p>To prevent allocations, both the vector of hashes and current roots could be
 passed in externally, but this is not a requirement.</p>
-<a class="header" href="#methods" id="methods"><h2>Methods</h2></a>
+<h2><a class="header" href="#methods" id="methods">Methods</a></h2>
 <p><code>merkle-tree-stream</code> should operate as a generic structure without tying itself
 to any particular hash function. This means that when creating an instance, the
 methods have to be passed in. The following methods are generally required:</p>
@@ -163,7 +172,7 @@ methods have to be passed in. The following methods are generally required:</p>
 <p>In strictly typed languages, both the input <code>data</code>, and <code>hash</code> need to be passed
 as type parameters into the generic function. In dynamically typed languages,
 both can generally be expressed as byte array.</p>
-<a class="header" href="#async" id="async"><h2>Async</h2></a>
+<h2><a class="header" href="#async" id="async">Async</a></h2>
 <p>In practice it's perfectly fine to write the stream as a synchronous method.
 For most implementations of Dat I/O typically tends to be the bottleneck, but on
 a live system that might not always be the case (e.g. contention with other
@@ -192,7 +201,7 @@ hash depends on the hash that came before it.</p>
 that could use more research. But starting with a read-write lock around the
 internal vector of hashes, and creating a task queue seems like the right
 starting point.</p>
-<a class="header" href="#references" id="references"><h2>References</h2></a>
+<h2><a class="header" href="#references" id="references">References</a></h2>
 <ul>
 <li><a href="https://github.com/datrs/merkle-tree-stream">datrs/merkle-tree-stream</a></li>
 <li><a href="https://github.com/mafintosh/merkle-tree-stream">mafintosh/merkle-tree-stream</a></li>

@@ -4,6 +4,10 @@
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
         <title></title>
+        
+        <meta name="robots" content="noindex" />
+        
+
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -32,7 +36,10 @@
     </head>
     <body class="light">
         <!-- Provide site root to javascript -->
-        <script type="text/javascript">var path_to_root = "";</script>
+        <script type="text/javascript">
+            var path_to_root = "";
+            var default_theme = "light";
+        </script>
 
         <!-- Work around some values being stored in localStorage wrapped in quotes -->
         <script type="text/javascript">
@@ -53,8 +60,8 @@
         <!-- Set the theme before any content is loaded, prevents flash -->
         <script type="text/javascript">
             var theme;
-            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { } 
-            if (theme === null || theme === undefined) { theme = 'light'; }
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
             document.body.className = theme;
             document.querySelector('html').className = theme + ' js';
         </script>
@@ -72,7 +79,10 @@
         </script>
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
-            <ol class="chapter"><li><a href="ch00-00-introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li><a href="ch01-00-key-concepts.html"><strong aria-hidden="true">2.</strong> Key Concepts</a></li><li><ol class="section"><li><a href="ch01-01-flat-tree.html"><strong aria-hidden="true">2.1.</strong> Flat Tree</a></li><li><a href="ch01-02-merkle-tree.html"><strong aria-hidden="true">2.2.</strong> Merkle Tree</a></li><li><a href="ch01-03-bitfield.html"><strong aria-hidden="true">2.3.</strong> Bitfield</a></li><li><a href="ch01-04-storage.html"><strong aria-hidden="true">2.4.</strong> Storage</a></li></ol></li><li><a href="ch02-00-implementation-guide.html"><strong aria-hidden="true">3.</strong> Implementation Guide</a></li><li><ol class="section"><li><a href="ch02-01-flat-tree.html"><strong aria-hidden="true">3.1.</strong> Flat Tree</a></li><li><a href="ch02-02-merkle-tree-stream.html"><strong aria-hidden="true">3.2.</strong> Merkle Tree Stream</a></li><li><a href="ch02-03-memory-pager.html"><strong aria-hidden="true">3.3.</strong> Memory Pager</a></li></ol></li><li><a href="ch03-00-appendix.html"><strong aria-hidden="true">4.</strong> Appendix</a></li><li><ol class="section"><li><a href="ch03-01-terminology.html"><strong aria-hidden="true">4.1.</strong> A - Terminology</a></li></ol></li></ol>
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li><a href="ch00-00-introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li><a href="ch01-00-key-concepts.html"><strong aria-hidden="true">2.</strong> Key Concepts</a></li><li><ol class="section"><li><a href="ch01-01-flat-tree.html"><strong aria-hidden="true">2.1.</strong> Flat Tree</a></li><li><a href="ch01-02-merkle-tree.html"><strong aria-hidden="true">2.2.</strong> Merkle Tree</a></li><li><a href="ch01-03-bitfield.html"><strong aria-hidden="true">2.3.</strong> Bitfield</a></li><li><a href="ch01-04-storage.html"><strong aria-hidden="true">2.4.</strong> Storage</a></li></ol></li><li><a href="ch02-00-implementation-guide.html"><strong aria-hidden="true">3.</strong> Implementation Guide</a></li><li><ol class="section"><li><a href="ch02-01-flat-tree.html"><strong aria-hidden="true">3.1.</strong> Flat Tree</a></li><li><a href="ch02-02-merkle-tree-stream.html"><strong aria-hidden="true">3.2.</strong> Merkle Tree Stream</a></li><li><a href="ch02-03-memory-pager.html"><strong aria-hidden="true">3.3.</strong> Memory Pager</a></li></ol></li><li><a href="ch03-00-appendix.html"><strong aria-hidden="true">4.</strong> Appendix</a></li><li><ol class="section"><li><a href="ch03-01-terminology.html"><strong aria-hidden="true">4.1.</strong> A - Terminology</a></li></ol></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
 
         <div id="page-wrapper" class="page-wrapper">
@@ -89,7 +99,7 @@
                                 <i class="fa fa-paint-brush"></i>
                             </button>
                             <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
-                                <li role="none"><button role="menuitem" class="theme" id="light">Light <span class="default">(default)</span></button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
                                 <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
                                 <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
                                 <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
@@ -102,12 +112,13 @@
                             
                         </div>
 
-                        <h1 class="menu-title"></h1> 
+                        <h1 class="menu-title"></h1>
 
                         <div class="right-buttons">
                             <a href="print.html" title="Print this book" aria-label="Print this book">
                                 <i id="print-button" class="fa fa-print"></i>
                             </a>
+                            
                         </div>
                     </div>
                 </div>
@@ -136,12 +147,12 @@
 
                 <div id="content" class="content">
                     <main>
-                        <a class="header" href="#introduction" id="introduction"><h1>Introduction</h1></a>
+                        <h1><a class="header" href="#introduction" id="introduction">Introduction</a></h1>
 <p>Welcome to <em>The Dat Protocol</em>, a technical book about <a href="https://datproject.org/">The Dat
 Project</a>. The Dat protocol is a p2p hypermedia
 protocol. It provides public-key-addressed file archives which can be synced
 securely and browsed on-demand.</p>
-<a class="header" href="#who-this-book-is-for" id="who-this-book-is-for"><h2>Who This Book Is For</h2></a>
+<h2><a class="header" href="#who-this-book-is-for" id="who-this-book-is-for">Who This Book Is For</a></h2>
 <p>This book is written for people interested in understanding the details of the
 Dat protocol, and potentially implementing parts of it themselves. We go into
 details about the different components that make up the protocol, and provide
@@ -151,15 +162,15 @@ guidance on how to approach an implementation yourself.</p>
 standardization and specification of the Dat protocol. This book focuses on
 providing an introduction to key concepts, and guidance on how to implement
 them.</p>
-<a class="header" href="#source-code" id="source-code"><h2>Source Code</h2></a>
+<h2><a class="header" href="#source-code" id="source-code">Source Code</a></h2>
 <p>The source files from which this book is generated can be found on
 <a href="https://github.com/datprotocol/book">GitHub</a>.</p>
-<a class="header" href="#key-concepts" id="key-concepts"><h1>Key Concepts</h1></a>
+<h1><a class="header" href="#key-concepts" id="key-concepts">Key Concepts</a></h1>
 <p>In this section we'll introduce you to the conceptual components that make up
 the Dat protocol. You don't need to know these to create your first Dat archive,
 but they're essential if you're trying to understand what happens at the
 protocol level.</p>
-<a class="header" href="#flat-tree" id="flat-tree"><h1>Flat Tree</h1></a>
+<h1><a class="header" href="#flat-tree" id="flat-tree">Flat Tree</a></h1>
 <p>Flat Trees are the core data structure that power Dat's Hypercore feeds. They
 allow us to deterministically represent a tree structure as a vector. This is
 particularly useful because vectors map elegantly to disk and memory.</p>
@@ -167,7 +178,7 @@ particularly useful because vectors map elegantly to disk and memory.</p>
 using them. In effect this means that Flat Trees are a specific way of indexing
 into a vector more than they are their own data structure. This makes them
 uniquely efficient and convenient to implement in a wide range of languages.</p>
-<a class="header" href="#thinking-about-flat-trees" id="thinking-about-flat-trees"><h2>Thinking About Flat Trees</h2></a>
+<h2><a class="header" href="#thinking-about-flat-trees" id="thinking-about-flat-trees">Thinking About Flat Trees</a></h2>
 <p>You can represent a binary tree in a simple flat list using the following
 structure:</p>
 <pre><code class="language-txt">      3
@@ -194,8 +205,8 @@ structure:</p>
 </code></pre>
 <p>The way this would be expressed in-memory would be as the list (vector):
 <code>[D B E A F C G]</code> or <code>[0 1 2 3 4 5 6]</code>.</p>
-<a class="header" href="#depth" id="depth"><h2>Depth</h2></a>
-<p>Indexes 0, 2, 4, 6 have a depth of 0. And indexes 1, 5, 9 have a depth of 1.</p>
+<h2><a class="header" href="#depth" id="depth">Depth</a></h2>
+<p>Indexes 0, 2, 4, 6 have a depth of 0. And indexes 1 and 5 have a depth of 1.</p>
 <pre><code class="language-text">depth = 2  ^        3
 depth = 1  |    1       5
 depth = 0  |  0   2   4   6  ...
@@ -212,7 +223,7 @@ depth = 1 | 1 5 9 13
 depth = 2 | 3 11
 depth = 3 | 7
 </code></pre>
-<a class="header" href="#node-kinds" id="node-kinds"><h3>Node Kinds</h3></a>
+<h3><a class="header" href="#node-kinds" id="node-kinds">Node Kinds</a></h3>
 <p>You might be noticing that the numbers at <code>depth = 0</code> is vastly greater than the
 amount of numbers at every other depth. We refer to nodes at <code>depth = 0</code> as
 <code>leaf nodes</code>, and nodes at every other depth as <code>parent nodes</code>.</p>
@@ -232,7 +243,7 @@ a node has in binary notation.</p>
 3 in binary = 011 (two trailing 1s)
 4 in binary = 100 (zero trailing 1s)
 </code></pre>
-<a class="header" href="#offset" id="offset"><h2>Offset</h2></a>
+<h2><a class="header" href="#offset" id="offset">Offset</a></h2>
 <p>When reading about flat-trees the word <code>offset</code> might regularly pop up. This
 refers to the offset from the left hand side of the tree.</p>
 <p>In the following tree the indexes with an offset of 0 are: <code>[0 1 3 7]</code>:</p>
@@ -262,7 +273,7 @@ refers to the offset from the left hand side of the tree.</p>
     13──┘
  14──┘
 </code></pre>
-<a class="header" href="#relationships-between-nodes" id="relationships-between-nodes"><h2>Relationships Between Nodes</h2></a>
+<h2><a class="header" href="#relationships-between-nodes" id="relationships-between-nodes">Relationships Between Nodes</a></h2>
 <p>When describing nodes we often also talk about the relationship between nodes.
 This includes words such as <code>uncle</code>, and <code>parent</code>.</p>
 <p>Take this example tree:</p>
@@ -291,19 +302,19 @@ node 1 is <code>0, 2</code>. The span of node 3 is <code>0, 6</code>.</li>
 <li><strong>right span:</strong> The left-most node in the span. The right span of node 1 is 2.
 The right span of node 3 is 6.</li>
 </ul>
-<a class="header" href="#references" id="references"><h2>References</h2></a>
+<h2><a class="header" href="#references" id="references">References</a></h2>
 <ul>
 <li>https://gist.github.com/jimpick/54adc72f11f38f1fe4bc1d45d3981708</li>
 <li>https://github.com/jimpick/hypercore-simple-ipld/blob/master/tree-test.js</li>
 <li>https://datatracker.ietf.org/doc/rfc7574/?include_text=1</li>
 <li>https://www.datprotocol.com/deps/0002-hypercore/</li>
 </ul>
-<a class="header" href="#merkle-tree" id="merkle-tree"><h1>Merkle Tree</h1></a>
+<h1><a class="header" href="#merkle-tree" id="merkle-tree">Merkle Tree</a></h1>
 <p>Merkle Trees in Dat are specialized <a href="./ch01-01-flat-tree">Flat Trees</a> that
 contain the content of the archives.</p>
 <p>In this section we'll cover how Merkle Trees work, and how we use them inside
 Hypercore.</p>
-<a class="header" href="#what-are-merkle-trees" id="what-are-merkle-trees"><h2>What Are Merkle Trees?</h2></a>
+<h2><a class="header" href="#what-are-merkle-trees" id="what-are-merkle-trees">What Are Merkle Trees?</a></h2>
 <p>Wikipedia defines a Merkle Tree as:</p>
 <blockquote>
 <p>A hash tree or Merkle tree is a tree in which every leaf node is labelled with
@@ -327,7 +338,7 @@ hashes of data, and all uneven numbers (parent nodes) contain hashes.</p>
 <li>Node 5 contains the hash of hashes from nodes 4 and 6.</li>
 <li>Node 3 contains the hash of hashes from nodes 1 and 5.</li>
 </ul>
-<a class="header" href="#hypercore-files" id="hypercore-files"><h2>Hypercore Files</h2></a>
+<h2><a class="header" href="#hypercore-files" id="hypercore-files">Hypercore Files</a></h2>
 <p>A Hypercore's internal structure typically consist of these files:</p>
 <ul>
 <li><strong>data:</strong> a file containing the data added to the Hypercore.</li>
@@ -360,7 +371,7 @@ to store content directly on disk. For example in the case of (hyper)media
 files.</p>
 </blockquote>
 <p>Let's look at how these files relate to each other to create a Hypercore feed.</p>
-<a class="header" href="#merkle-trees-in-theory" id="merkle-trees-in-theory"><h2>Merkle Trees In Theory</h2></a>
+<h2><a class="header" href="#merkle-trees-in-theory" id="merkle-trees-in-theory">Merkle Trees In Theory</a></h2>
 <p>Whenever data is added to Hypercore, a new entry is created in the data file. We
 then hash the data, and write that hash to a tree file's leaf node. If the leaf
 node has a sibling, the parent node's hash can be computed. If the new parent
@@ -372,10 +383,10 @@ the tree, concatenate them, hash them, and sign them with our private key. We
 then store the signature in our signatures file at the same index of the leaf
 node that was added.</p>
 <p>This might all sound a little abstract though, so let's look at an example.</p>
-<a class="header" href="#merkle-trees-in-practice" id="merkle-trees-in-practice"><h2>Merkle Trees In Practice</h2></a>
+<h2><a class="header" href="#merkle-trees-in-practice" id="merkle-trees-in-practice">Merkle Trees In Practice</a></h2>
 <p>We're starting off with an empty Hypercore feed. We're planning to add 4 pieces
 of data to it, one by one: <code>[A B C D]</code>.</p>
-<a class="header" href="#entry-1" id="entry-1"><h3>Entry 1</h3></a>
+<h3><a class="header" href="#entry-1" id="entry-1">Entry 1</a></h3>
 <p>Let's add our first piece of data to Hypercore. We insert the value &quot;A&quot; as our
 first entry. In order, the following actions happen:</p>
 <ol>
@@ -394,7 +405,7 @@ first entry. In order, the following actions happen:</p>
 <p><strong>signatures</strong></p>
 <pre><code class="language-txt">0: sig(#0)
 </code></pre>
-<a class="header" href="#entry-2" id="entry-2"><h3>Entry 2</h3></a>
+<h3><a class="header" href="#entry-2" id="entry-2">Entry 2</a></h3>
 <p>Let's add our second entry to hypercore. We now have more nodes, which means
 things are a little different:</p>
 <ol>
@@ -424,7 +435,7 @@ length, which means every node in the tree is the same length.</p>
 <pre><code class="language-txt">0: sig(#0)
 1: sig(#1)
 </code></pre>
-<a class="header" href="#entry-3" id="entry-3"><h3>Entry 3</h3></a>
+<h3><a class="header" href="#entry-3" id="entry-3">Entry 3</a></h3>
 <p>So far so good. We're well on our way to building a full tree-structure! Let's
 continue on our journey, and add our third entry: <code>C</code>.</p>
 <ol>
@@ -451,7 +462,7 @@ result, and sign the result.</li>
 1: sig(#1)
 2: sig(#1 + #4)
 </code></pre>
-<a class="header" href="#entry-4" id="entry-4"><h3>Entry 4</h3></a>
+<h3><a class="header" href="#entry-4" id="entry-4">Entry 4</a></h3>
 <p>Let's add the final piece of data to our feed. This will balance out a tree, and
 bring us back to only one root hash!</p>
 <ol>
@@ -481,12 +492,12 @@ bring us back to only one root hash!</p>
 2: sig(#1 + #4)
 3: sig(#3)
 </code></pre>
-<a class="header" href="#verifying-a-merkle-tree" id="verifying-a-merkle-tree"><h2>Verifying A Merkle Tree</h2></a>
+<h2><a class="header" href="#verifying-a-merkle-tree" id="verifying-a-merkle-tree">Verifying A Merkle Tree</a></h2>
 <p>TODO</p>
-<a class="header" href="#root-nodes" id="root-nodes"><h2>Root Nodes</h2></a>
+<h2><a class="header" href="#root-nodes" id="root-nodes">Root Nodes</a></h2>
 <p>If the number of leaf nodes is a multiple of 2 the flat tree will only have a
 single root. Otherwise it'll have more than one.</p>
-<a class="header" href="#storage-format" id="storage-format"><h2>Storage Format</h2></a>
+<h2><a class="header" href="#storage-format" id="storage-format">Storage Format</a></h2>
 <p>The format of the each node in the Merkle Tree on disk is a series of 40 byte
 buffers. The first 32 bytes is the hash. The next 8 bytes is the byte size of
 the spanning tree.</p>
@@ -501,19 +512,19 @@ position in the Flat Tree.</li>
 the file of <code>32 + 5 * 40</code>, and then read <code>40</code> bytes. The first 32 bytes are the
 hash. The last 8 bytes is the combined length of the data nodes <code>#4</code> and <code>#6</code> are
 referencing. The length is encoded as <code>uint64</code> Big Endian.</p>
-<a class="header" href="#references-1" id="references-1"><h2>References</h2></a>
+<h2><a class="header" href="#references-1" id="references-1">References</a></h2>
 <ul>
 <li>https://gist.github.com/jimpick/54adc72f11f38f1fe4bc1d45d3981708</li>
 <li>https://github.com/datrs/tree-index/issues/7#issuecomment-419086236</li>
 </ul>
-<a class="header" href="#bitfield" id="bitfield"><h1>Bitfield</h1></a>
-<a class="header" href="#what-is-a-bitfield" id="what-is-a-bitfield"><h2>What is a bitfield?</h2></a>
+<h1><a class="header" href="#bitfield" id="bitfield">Bitfield</a></h1>
+<h2><a class="header" href="#what-is-a-bitfield" id="what-is-a-bitfield">What is a bitfield?</a></h2>
 <p>Space-efficient data structure used to figure out which data you have and what
 data you don't. Meant to always be kept in memory because it's small enough.</p>
 <p>At its core, bitfields are a way of efficiently describing sets of numbers. You
 can think of them as a series of bits. When a number at a position is 1, it
 means that position is in the set. If a number is 0, that position isn't.</p>
-<a class="header" href="#example" id="example"><h3>Example</h3></a>
+<h3><a class="header" href="#example" id="example">Example</a></h3>
 <pre><code class="language-txt">bits:  00101
 index: 01234
 </code></pre>
@@ -522,7 +533,7 @@ the way it's enumerated.</p>
 <p>In Dat we use bitfields to describe which pieces of data we have, and which
 pieces of data we don't. Also it's used internally to index data structures,
 such as the Merkle Tree.</p>
-<a class="header" href="#indexed-bitfields" id="indexed-bitfields"><h2>Indexed Bitfields</h2></a>
+<h2><a class="header" href="#indexed-bitfields" id="indexed-bitfields">Indexed Bitfields</a></h2>
 <p>The most common operations in Dat for bitfields is to either find a piece of
 data that's missing, or checking if we have a piece of data.</p>
 <p>Checking if we have a piece of data is straightforward, as all we have to do is
@@ -530,7 +541,7 @@ look in the bitfield in the position of the data and see if it's a <code>1</code
 <p>Finding a piece of data we're missing is a bit more tricky. Basically it'll
 require a linear scan of the whole bitfield. In order to speed this up, we use
 an Indexed Bitfield.</p>
-<a class="header" href="#structure" id="structure"><h3>Structure</h3></a>
+<h3><a class="header" href="#structure" id="structure">Structure</a></h3>
 <p>At a high level Indexed Bitfields are a binary tree structure where each node is
 made up out of 2 bits.</p>
 <ul>
@@ -556,10 +567,10 @@ of the tree. This means we only need to check the children of the left node to
 find out exactly which nodes we have.</p>
 <p>A fun fact here is also: a completely zeroed-out buffer is a valid Indexed
 Bitfield - it just means it's completely empty.</p>
-<a class="header" href="#optimizing-the-structure" id="optimizing-the-structure"><h3>Optimizing the Structure</h3></a>
+<h3><a class="header" href="#optimizing-the-structure" id="optimizing-the-structure">Optimizing the Structure</a></h3>
 <p>Looking at a byte and looking at a bit is the same cost in a computer. You want
 to optimize for getting the most information possible when looking at a byte.</p>
-<p>Therefore in order get the most performance out of our structure, we want to
+<p>Therefore in order to get the most performance out of our structure, we want to
 construct our tree using bytes instead of pairs of bits.</p>
 <p>Consider the following scheme. Given two bytes: <code>A</code> <code>B</code>. Take each of them, and
 split each of them into pairs of two bits. We'll use <code>a1 a2 a3 a4</code> to indicate
@@ -573,12 +584,12 @@ Scheme to each pair of bits.</p>
 Tree Index Scheme.</p>
 <p>In the future we might make this even more efficient using <code>SIMD</code> instructions,
 which can operate on more bits at the same time.</p>
-<a class="header" href="#lookup-tables" id="lookup-tables"><h2>Lookup Tables</h2></a>
+<h2><a class="header" href="#lookup-tables" id="lookup-tables">Lookup Tables</a></h2>
 <p>An efficient implementation of the previous scheme can be done using lookup
 tables for values between between 0 and 256.</p>
 <p>This is all solely for performance and completely optional. The important part
 is that the indexing scheme is followed.</p>
-<a class="header" href="#types-of-bitfields" id="types-of-bitfields"><h2>Types of Bitfields</h2></a>
+<h2><a class="header" href="#types-of-bitfields" id="types-of-bitfields">Types of Bitfields</a></h2>
 <p>We have 3 bitfields:</p>
 <ul>
 <li><strong>Data Bitfield:</strong> Indicates which data you have, and which data you don't.</li>
@@ -589,7 +600,7 @@ and which nodes you don't.</li>
 </ul>
 <p>This means that whenever you update the Data Bitfield, you must also update
 the Indexed Bitfield.</p>
-<a class="header" href="#updating-a-byte" id="updating-a-byte"><h3>Updating a Byte</h3></a>
+<h3><a class="header" href="#updating-a-byte" id="updating-a-byte">Updating a Byte</a></h3>
 <p>If we want to set an index in a bitfield to <code>false</code>, it would mean we needed to
 flip a bit to <code>0</code>. Because we can only operate on bytes, the easiest way to
 achieve this is to apply a bitmask.</p>
@@ -612,7 +623,7 @@ let data_update = vec![
 which bit is set to zero. When you want to flip a bit to zero, you take the
 index of the bit you want to flip, look up the entry in the table, and bitwise
 AND the two numbers.</p>
-<a class="header" href="#serialization" id="serialization"><h2>Serialization</h2></a>
+<h2><a class="header" href="#serialization" id="serialization">Serialization</a></h2>
 <p>For every piece of data there's going to be 1 bit in the Data Bitfield. And
 2 bits in the Merkle Tree Bitfield because there's a parent node and a leaf
 node. There are going to be as many parents as there will be leaves.</p>
@@ -625,31 +636,31 @@ Index Scheme, totalling 4 bits in the Indexed Bitfield.</p>
 <li><strong>Merkle Tree:</strong> 2048 bytes.</li>
 <li><strong>Indexed Tree:</strong> 256 bytes.</li>
 </ul>
-<a class="header" href="#run-length-encoding" id="run-length-encoding"><h2>Run Length Encoding</h2></a>
+<h2><a class="header" href="#run-length-encoding" id="run-length-encoding">Run Length Encoding</a></h2>
 <p>When sending data over the wire, we want to compress the bitfields further. An
 efficient way of doing this is by using Run Length Encoding (RLE).
 TODO: explain the module. For now read the README.</p>
 <ul>
 <li><a href="https://github.com/mafintosh/bitfield-rle">mafintosh/bitfield-rle</a></li>
 </ul>
-<a class="header" href="#storage" id="storage"><h1>Storage</h1></a>
+<h1><a class="header" href="#storage" id="storage">Storage</a></h1>
 <p>You can represent a binary tree in a simple flat list using the following
 structure:</p>
 <pre><code class="language-txt">      3
   1       5
 0   2   4   6  ...
 </code></pre>
-<a class="header" href="#headers" id="headers"><h2>Headers</h2></a>
+<h2><a class="header" href="#headers" id="headers">Headers</a></h2>
 <p>All the files in Dat's Storage are considered SLEEP files. However, not all
 files require a header. Only the files that have a variable algorithm (such as
 hashing, signing) require a SLEEP header.</p>
-<a class="header" href="#usage-in-dat" id="usage-in-dat"><h2>Usage in Dat</h2></a>
+<h2><a class="header" href="#usage-in-dat" id="usage-in-dat">Usage in Dat</a></h2>
 <p>When you append data, you basically update the Merkle Tree. Updating the Merkle
 Tree creates a new Root Hash of the Merkle Tree. For security we need to sign
 this Root Hash, so people can trust it's the new one.</p>
 <p>It's important to know that everything in Hypercore is a byproduct of appending
 data to the Feed. This includes Signatures, Hashes, Root Nodes and more.</p>
-<a class="header" href="#types-of-storage" id="types-of-storage"><h3>Types of Storage</h3></a>
+<h3><a class="header" href="#types-of-storage" id="types-of-storage">Types of Storage</a></h3>
 <ul>
 <li><strong>data:</strong> The concatenated data that was appended to the feed.</li>
 <li><strong>merkle tree:</strong> The hashes of the data, and hashes of hashes of data - stored
@@ -662,7 +673,7 @@ have and what data you don't.</li>
 </ul>
 <p>When you produce a new Signature, the index for the Signature is the same index
 as for the data you appended to the Feed.</p>
-<a class="header" href="#random-access-storage" id="random-access-storage"><h2>Random Access Storage</h2></a>
+<h2><a class="header" href="#random-access-storage" id="random-access-storage">Random Access Storage</a></h2>
 <p>Hypercore supports multiple persistence backends through the
 <code>random-access-storage</code> interface. Each storage backend adheres to a
 standardized interface to write, read and delete ranges of bytes.</p>
@@ -686,15 +697,15 @@ space we don't use.</p>
 <p>It's generally good to use 1kb pages when accessing memory, and 4kb pages when
 accessing disk (SSD). This ensures that data will be written as continuous
 chunks, which is good for performance.</p>
-<a class="header" href="#implementation-guide" id="implementation-guide"><h1>Implementation Guide</h1></a>
-<a class="header" href="#flat-tree-1" id="flat-tree-1"><h1>flat-tree</h1></a>
+<h1><a class="header" href="#implementation-guide" id="implementation-guide">Implementation Guide</a></h1>
+<h1><a class="header" href="#flat-tree-1" id="flat-tree-1">flat-tree</a></h1>
 <p><code>flat-tree</code> is one of the first modules that should be implemented for the Dat
 protocol. See <a href="/ch01-01-flat-tree.html">Key Concepts: Flat Tree</a> for an overview
 of how Flat Trees work.</p>
-<a class="header" href="#core-api" id="core-api"><h2>Core API</h2></a>
+<h2><a class="header" href="#core-api" id="core-api">Core API</a></h2>
 <p>The core flat-tree API consists of several methods that can calculate the nodes
 relative to each other.</p>
-<a class="header" href="#children" id="children"><h3>Children</h3></a>
+<h3><a class="header" href="#children" id="children">Children</a></h3>
 <p>Returns both children of a node. It cannot return any children when querying a
 leaf node, so the result must be a <code>Null</code>, <code>Maybe</code>, or <code>Option</code> type, depending
 on the language used.</p>
@@ -703,14 +714,14 @@ on the language used.</p>
 #fn main() {
 pub fn children_with_depth(i: usize, depth: usize) -&gt; Option&lt;(usize, usize)&gt;
 #}</code></pre></pre>
-<a class="header" href="#count" id="count"><h3>count</h3></a>
+<h3><a class="header" href="#count" id="count">count</a></h3>
 <p>Returns how many nodes are under the tree that the node spans.</p>
 <pre><pre class="playpen"><code class="language-rust">
 # #![allow(unused_variables)]
 #fn main() {
 pub fn count_with_depth(i: usize) -&gt; usize
 #}</code></pre></pre>
-<a class="header" href="#depth-1" id="depth-1"><h3>depth</h3></a>
+<h3><a class="header" href="#depth-1" id="depth-1">depth</a></h3>
 <p>Returns the depth of a node at a given index.
 is removed from the left-most node at its current depth</p>
 <pre><pre class="playpen"><code class="language-rust">
@@ -718,7 +729,7 @@ is removed from the left-most node at its current depth</p>
 #fn main() {
 pub fn depth(i: usize) -&gt; usize
 #}</code></pre></pre>
-<a class="header" href="#full_roots" id="full_roots"><h3>full_roots</h3></a>
+<h3><a class="header" href="#full_roots" id="full_roots">full_roots</a></h3>
 <p>Returns a list of all the full roots (subtrees where all nodes have either 2 or
 0 children).</p>
 <pre><pre class="playpen"><code class="language-rust">
@@ -726,28 +737,28 @@ pub fn depth(i: usize) -&gt; usize
 #fn main() {
 pub fn full_roots(i: usize) -&gt; Vec&lt;usize&gt;{
 #}</code></pre></pre>
-<a class="header" href="#index" id="index"><h3>index</h3></a>
-<p>Return the index for a node at at given depth and offset.</p>
+<h3><a class="header" href="#index" id="index">index</a></h3>
+<p>Return the index for a node at a given depth and offset.</p>
 <pre><pre class="playpen"><code class="language-rust">
 # #![allow(unused_variables)]
 #fn main() {
 pub fn index(depth: usize, offset: usize) -&gt; usize
 #}</code></pre></pre>
-<a class="header" href="#left_child" id="left_child"><h3>left_child</h3></a>
+<h3><a class="header" href="#left_child" id="left_child">left_child</a></h3>
 <p>Return the left child of the node at index.</p>
 <pre><pre class="playpen"><code class="language-rust">
 # #![allow(unused_variables)]
 #fn main() {
 pub fn left_child(i: usize) -&gt; Option&lt;usize&gt;
 #}</code></pre></pre>
-<a class="header" href="#left_span" id="left_span"><h3>left_span</h3></a>
+<h3><a class="header" href="#left_span" id="left_span">left_span</a></h3>
 <p>Returns the left-most child of the node at index.</p>
 <pre><pre class="playpen"><code class="language-rust">
 # #![allow(unused_variables)]
 #fn main() {
 pub fn left_span(i: usize) -&gt; usize
 #}</code></pre></pre>
-<a class="header" href="#offset-1" id="offset-1"><h3>offset</h3></a>
+<h3><a class="header" href="#offset-1" id="offset-1">offset</a></h3>
 <p>Returns the offset of a node at a given index. The offset of a node is how far
 it is removed from the left-most node at its current depth</p>
 <pre><pre class="playpen"><code class="language-rust">
@@ -755,42 +766,42 @@ it is removed from the left-most node at its current depth</p>
 #fn main() {
 pub fn offset(i: usize) -&gt; usize
 #}</code></pre></pre>
-<a class="header" href="#parent" id="parent"><h3>parent</h3></a>
+<h3><a class="header" href="#parent" id="parent">parent</a></h3>
 <p>Returns the parent of a node.</p>
 <pre><pre class="playpen"><code class="language-rust">
 # #![allow(unused_variables)]
 #fn main() {
 pub fn parent(i: usize) -&gt; usize
 #}</code></pre></pre>
-<a class="header" href="#right_child" id="right_child"><h3>right_child</h3></a>
+<h3><a class="header" href="#right_child" id="right_child">right_child</a></h3>
 <p>Return the right child of the node at index.</p>
 <pre><pre class="playpen"><code class="language-rust">
 # #![allow(unused_variables)]
 #fn main() {
 pub fn right_child(i: usize) -&gt; Option&lt;usize&gt;
 #}</code></pre></pre>
-<a class="header" href="#right_span" id="right_span"><h3>right_span</h3></a>
+<h3><a class="header" href="#right_span" id="right_span">right_span</a></h3>
 <p>Returns the right-most child of the node at index.</p>
 <pre><pre class="playpen"><code class="language-rust">
 # #![allow(unused_variables)]
 #fn main() {
 pub fn right_span(i: usize) -&gt; usize
 #}</code></pre></pre>
-<a class="header" href="#left_span-1" id="left_span-1"><h3>left_span</h3></a>
+<h3><a class="header" href="#left_span-1" id="left_span-1">left_span</a></h3>
 <p>Returns the left-most child of the node at index.</p>
 <pre><pre class="playpen"><code class="language-rust">
 # #![allow(unused_variables)]
 #fn main() {
 pub fn right_span(i: usize) -&gt; usize
 #}</code></pre></pre>
-<a class="header" href="#sibling" id="sibling"><h3>sibling</h3></a>
+<h3><a class="header" href="#sibling" id="sibling">sibling</a></h3>
 <p>Returns the node that shares the same parent node.</p>
 <pre><pre class="playpen"><code class="language-rust">
 # #![allow(unused_variables)]
 #fn main() {
 pub fn sibling(i: usize) -&gt; usize
 #}</code></pre></pre>
-<a class="header" href="#spans" id="spans"><h3>spans</h3></a>
+<h3><a class="header" href="#spans" id="spans">spans</a></h3>
 <p>Returns a pair of the left-most node in the tree, and the right-most node in the
 tree.</p>
 <pre><pre class="playpen"><code class="language-rust">
@@ -798,29 +809,29 @@ tree.</p>
 #fn main() {
 pub fn spans(i: usize) -&gt; (usize, usize)
 #}</code></pre></pre>
-<a class="header" href="#uncle" id="uncle"><h3>uncle</h3></a>
+<h3><a class="header" href="#uncle" id="uncle">uncle</a></h3>
 <p>Returns the parent's sibling node.</p>
 <pre><pre class="playpen"><code class="language-rust">
 # #![allow(unused_variables)]
 #fn main() {
 pub fn uncle(i: usize) -&gt; usize
 #}</code></pre></pre>
-<a class="header" href="#iterator-api" id="iterator-api"><h2>Iterator API</h2></a>
+<h2><a class="header" href="#iterator-api" id="iterator-api">Iterator API</a></h2>
 <p>Some upstream modules require stateful traversal of the tree. It can be
 convenient to expose a stateful iterator module as part of <code>flat-tree</code> for those
 cases.</p>
 <p>The iterator should be a constructor that takes an initial index, and exposes
 methods to move to child nodes, parent nodes, etc. The iterator should also
 expose the index so it can be stored or used for other computations.</p>
-<a class="header" href="#optimizations" id="optimizations"><h2>Optimizations</h2></a>
-<a class="header" href="#calculate-depth" id="calculate-depth"><h3>Calculate Depth</h3></a>
+<h2><a class="header" href="#optimizations" id="optimizations">Optimizations</a></h2>
+<h3><a class="header" href="#calculate-depth" id="calculate-depth">Calculate Depth</a></h3>
 <p>The depth of a node can be calculated by counting the number of tailing zeros in
 a number. Languages such as Rust expose <code>&lt;num&gt;.trailing_zeros()</code> which counts
 the amount of zeros at the end of a number (<code>cttz</code> intrinsic). By combining a
 bitwise negation (<code>!</code> or <code>NOT</code> operation) with the <code>.trailing_zeros()</code> method,
 the amount of trailing ones can be counted. On x86 machines this should be
 around 3 instructions when inlined.</p>
-<a class="header" href="#re-use-the-depth-parameter" id="re-use-the-depth-parameter"><h3>Re-use the depth parameter</h3></a>
+<h3><a class="header" href="#re-use-the-depth-parameter" id="re-use-the-depth-parameter">Re-use the depth parameter</a></h3>
 <p>Sometimes when calling multiple functions on the same index, depending on the
 execution environment it can be efficient to reuse the <code>depth</code> parameter.</p>
 <p>However if the optimized depth method is used, there's no strict need to expose
@@ -828,22 +839,22 @@ the <code>with_depth*</code> methods, as the compiler will detect the duplicate
 computation, and remove it anyway. Mileage may vary, but this technique has been
 tested on LLVM output for the Rust version. In the worst case there might be
 penalty of up 3 instructions per call, which seems like a negligible penalty.</p>
-<a class="header" href="#calculate-children" id="calculate-children"><h3>Calculate children</h3></a>
+<h3><a class="header" href="#calculate-children" id="calculate-children">Calculate children</a></h3>
 <p>Calculating whether a node has children can be sped up by quickly checking if a
 number is even or uneven. If a number is uneven, it's already guaranteed to be a
 child node, so it can't have child nodes.</p>
-<a class="header" href="#spans-1" id="spans-1"><h3>Spans</h3></a>
+<h3><a class="header" href="#spans-1" id="spans-1">Spans</a></h3>
 <p>Similarly for spans. If an even number is targeted, it is at the bottom of the
-tree, so it will only span itself. Therefor it's easy to implement an <code>is_even</code>
+tree, so it will only span itself. Therefore it's easy to implement an <code>is_even</code>
 check, and return the index that was passed in if it's true.</p>
-<a class="header" href="#full-roots" id="full-roots"><h2>Full Roots</h2></a>
+<h2><a class="header" href="#full-roots" id="full-roots">Full Roots</a></h2>
 <p>To prevent allocations <code>full-roots</code> could also write to either a pre-allocated
 vector, or a stack-allocated collection instead.</p>
-<a class="header" href="#merkle-tree-stream" id="merkle-tree-stream"><h1>Merkle Tree Stream</h1></a>
+<h1><a class="header" href="#merkle-tree-stream" id="merkle-tree-stream">Merkle Tree Stream</a></h1>
 <p>We covered how Dat's Merkle Trees work in the <a href="/ch01-02-merkle-tree.html">Merkle Tree
 Chapter</a>. In this chapter we'll discuss how to
 implement it, and what to look out for when optimizing.</p>
-<a class="header" href="#core-abstraction" id="core-abstraction"><h2>Core Abstraction</h2></a>
+<h2><a class="header" href="#core-abstraction" id="core-abstraction">Core Abstraction</a></h2>
 <p>At its core, the merkle tree stream is a stateful algorithm. It takes data in
 (leaf nodes), hashes it, and computes as many parent hashes as it can.</p>
 <p>At its core this can be expressed as a stateful class that has a <code>.append()</code> or
@@ -855,7 +866,7 @@ implement it, and what to look out for when optimizing.</p>
 </ul>
 <p>To prevent allocations, both the vector of hashes and current roots could be
 passed in externally, but this is not a requirement.</p>
-<a class="header" href="#methods" id="methods"><h2>Methods</h2></a>
+<h2><a class="header" href="#methods" id="methods">Methods</a></h2>
 <p><code>merkle-tree-stream</code> should operate as a generic structure without tying itself
 to any particular hash function. This means that when creating an instance, the
 methods have to be passed in. The following methods are generally required:</p>
@@ -866,7 +877,7 @@ methods have to be passed in. The following methods are generally required:</p>
 <p>In strictly typed languages, both the input <code>data</code>, and <code>hash</code> need to be passed
 as type parameters into the generic function. In dynamically typed languages,
 both can generally be expressed as byte array.</p>
-<a class="header" href="#async" id="async"><h2>Async</h2></a>
+<h2><a class="header" href="#async" id="async">Async</a></h2>
 <p>In practice it's perfectly fine to write the stream as a synchronous method.
 For most implementations of Dat I/O typically tends to be the bottleneck, but on
 a live system that might not always be the case (e.g. contention with other
@@ -895,12 +906,12 @@ hash depends on the hash that came before it.</p>
 that could use more research. But starting with a read-write lock around the
 internal vector of hashes, and creating a task queue seems like the right
 starting point.</p>
-<a class="header" href="#references-2" id="references-2"><h2>References</h2></a>
+<h2><a class="header" href="#references-2" id="references-2">References</a></h2>
 <ul>
 <li><a href="https://github.com/datrs/merkle-tree-stream">datrs/merkle-tree-stream</a></li>
 <li><a href="https://github.com/mafintosh/merkle-tree-stream">mafintosh/merkle-tree-stream</a></li>
 </ul>
-<a class="header" href="#memory-pager" id="memory-pager"><h1>memory-pager</h1></a>
+<h1><a class="header" href="#memory-pager" id="memory-pager">memory-pager</a></h1>
 <p>Data in Hypercore streams can be replicated out of order. This means that you
 could both have the first message in a feed, and the millionth message in a
 feed. To ensure that we don't allocate space for a million messages when we only
@@ -908,8 +919,8 @@ have two we make use of a data structure called a <em>memory pager</em>.</p>
 <p>Memory pagers work by having a vector of pointers to fixed-sized byte buffers.
 Each buffer (or page, if you will) is only allocated once there it has data that
 needs to be written into it.</p>
-<a class="header" href="#example-1" id="example-1"><h2>Example</h2></a>
-<a class="header" href="#writing" id="writing"><h3>Writing</h3></a>
+<h2><a class="header" href="#example-1" id="example-1">Example</a></h2>
+<h3><a class="header" href="#writing" id="writing">Writing</a></h3>
 <p>Say we have a memory pager with pages that are 4 kilobytes long each. The
 initial state would be:</p>
 <pre><code class="language-txt">[]
@@ -942,7 +953,7 @@ is located a position 0, not position 1.</p>
 <p>The first page isn't allocated so we put a <code>None</code> (or <code>null</code>) value there. The
 second page (index 1) <em>is</em> allocated, so we keep a pointer into the buffer. All
 gaps in between bytes are kept as None types.</p>
-<a class="header" href="#reading" id="reading"><h2>Reading</h2></a>
+<h2><a class="header" href="#reading" id="reading">Reading</a></h2>
 <p>Reading values from the pager can be split up into two operations:</p>
 <ul>
 <li>reading a value from an empty page</li>
@@ -955,7 +966,7 @@ similar to accessing values in most vector implementations.</p>
 value will be empty too.</p>
 <p>If the page exists, the index into the buffer must be calculated (see the
 Writing section), and that value can be returned.</p>
-<a class="header" href="#implementation" id="implementation"><h2>Implementation</h2></a>
+<h2><a class="header" href="#implementation" id="implementation">Implementation</a></h2>
 <p>We can get the page by dividing the index by the page size:</p>
 <pre><pre class="playpen"><code class="language-rust">
 # #![allow(unused_variables)]
@@ -983,17 +994,17 @@ fn set(index: usize, value: T) {
   page[page_index] = value;
 }
 #}</code></pre></pre>
-<a class="header" href="#references-3" id="references-3"><h2>References</h2></a>
+<h2><a class="header" href="#references-3" id="references-3">References</a></h2>
 <ul>
 <li><a href="https://github.com/mafintosh/memory-pager">mafintosh/memory-pager</a></li>
 <li><a href="https://github.com/datrs/memory-pager">datrs/memory-pager</a></li>
 </ul>
-<a class="header" href="#appendix" id="appendix"><h1>Appendix</h1></a>
+<h1><a class="header" href="#appendix" id="appendix">Appendix</a></h1>
 <p>The following sections contain reference material you may find useful in your
 Dat journey.</p>
-<a class="header" href="#terminology" id="terminology"><h1>Terminology</h1></a>
+<h1><a class="header" href="#terminology" id="terminology">Terminology</a></h1>
 <p>The following terms are used when describing the Dat Protocol.</p>
-<a class="header" href="#terminology-currently-in-use" id="terminology-currently-in-use"><h2>Terminology Currently in Use</h2></a>
+<h2><a class="header" href="#terminology-currently-in-use" id="terminology-currently-in-use">Terminology Currently in Use</a></h2>
 <ul>
 <li><strong>feed:</strong> The main data structure in Hypercore. Append-only log that uses
 multiple data structures and algorithms to safely store data.</li>
