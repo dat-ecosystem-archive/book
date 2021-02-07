@@ -113,7 +113,7 @@ expose the index so it can be stored or used for other computations.
 
 ## Optimizations
 ### Calculate Depth
-The depth of a node can be calculated by counting the number of tailing zeros in
+The depth of a node can be calculated by counting the number of tailing ones in
 a number. Languages such as Rust expose `<num>.trailing_zeros()` which counts
 the amount of zeros at the end of a number (`cttz` intrinsic). By combining a
 bitwise negation (`!` or `NOT` operation) with the `.trailing_zeros()` method,
