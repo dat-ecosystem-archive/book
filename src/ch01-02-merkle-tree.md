@@ -218,7 +218,7 @@ __signatures__
 TODO
 
 ## Root Nodes
-If the number of leaf nodes is a multiple of 2 the flat tree will only have a
+If the number of leaf nodes is a power of 2 the flat tree will only have a
 single root. Otherwise it'll have more than one.
 
 ## Storage Format
