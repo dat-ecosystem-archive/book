@@ -215,7 +215,54 @@ __signatures__
 ```
 
 ## Verifying A Merkle Tree
-TODO
+Merkle tree allows efficient verification of the contents of large data structures. 
+Let's add more data to the above Feed:
+
+__data__
+```txt
+0: A
+1: B
+2: C
+3: D
+4: E
+5: F
+6: G
+7: H
+```
+Now, Alice wants to recieve and verify the data `D`, to accomplish this, then she need to recieve: (marked with `~`)
+
+* the chunk3. 
+* chunk3's uncle and its uncle's uncle and so on.
+* the signed root hash: #7.
+
+__tree__
+```txt
+ 0:  #0──┐      
+       ~#1──┐   
+ 1:  #2──┘  │   
+           #3──┐
+ 2: ~#4──┐  │  │
+        #5──┘  │
+~3:  #6──┘     │
+              ~#7
+ 4:  #8──┐     │
+        #9──┐  │
+ 5: #10──┘  │  │
+         ~#11──┘
+ 6: #12──┐  │   
+       #13──┘   
+ 7: #14──┘   
+```
+
+We will first verify the signature on hash #7: `verify(#7, signature, publickey)`,
+then we verify the chunk 3:
+
+1. hash the chunk3: #6 = hash(chunk3)
+2. hash #6 and recieved #4: #5 = hash(#6 + #4)
+3. hash #5 and recieved #1: #3 = hash(#1 + #5)
+4. hash #3 and recieved #11: #7 = hash(#3 + #11)
+5. if our calculated #7 is equal to our received signed #7, then we know the chunk3 we received is valid.
+
 
 ## Root Nodes
 If the number of leaf nodes is a multiple of 2 the flat tree will only have a
